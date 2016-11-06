@@ -41,11 +41,12 @@ class Dictionary:
         return s
 
     def filter(self, a):
-        if not self._used:
-            self.filter_v2(a)
-            self._used = True
-        else:
-            self.filter_v1(a)
+        # if not self._used:
+            # self.filter_v2(a)
+            # self._used = True
+        # else:
+            # self.filter_v1(a)
+        self.filter_v1(a)
 
     def filter_v2(self, alphabet):
         t1 = time.time()
@@ -84,7 +85,7 @@ class Dictionary:
                 # If the possible word doesn't fits the current solution
                 if not alphabet.fits(ciphered, possible):
                     # Remove the word
-                    self._d[ciphered].remove(possible)
+                    self._d[ciphered].remove_key(possible)
             # If there are no possible words remaining
             if len(self._d[ciphered]) == 0:
                 # Remove it from the dict
@@ -107,13 +108,13 @@ class Dictionary:
     # Input:
     #       key: String (Ciphered word)
     #       word: String (Possible word)
-    def remove(self, key, word):
+    def remove_key(self, key, word):
         self._used = True
-        self._d[key].remove(word)
+        self._d[key].remove_key(word)
 
     # Method: Removes a word from the dict keys
     # Input: String (Ciphered word)
-    def pop(self, key):
+    def remove_possible(self, key):
         self._used = True
         self._d.pop(key)
 
@@ -122,6 +123,11 @@ class Dictionary:
     # Output: Non-bonded List
     def get(self, key):
         return list(self._d[key])
+
+    # Method: Returns the internal dict
+    # Output: Non-bonded dict
+    def get_dict(self):
+        return copy.deepcopy(self._d)
 
     # Method: Adds a new entry to the dict
     # Input:

@@ -30,7 +30,7 @@ def create_dict():
 
         if response == 'y':
             w = t.extract_words()
-            di = p.get_matching_words_dic(w)
+            di = Dictionary(p.get_matching_words_dic(w), False)
             print('Dict created')
             break
         else:
@@ -72,9 +72,11 @@ while 1:
     if args[0] == 'load':
         if len(args) == 1:
             text = input('Input> ')
-            t_committed = text
+            t = text
+            t_committed = t
             continue
         if args[1] == '-h':
+            print('load [FILE]')
             print('Loads the ciphered text, without FILE reads from the stdio')
             print('Options:')
             print('    -h           Show this menu')
@@ -84,7 +86,7 @@ while 1:
             text = open(args[1], encoding='iso-8859-1').read()
             if t is None:
                 t = Text(text)
-                t_committed = Text(text)
+                t_committed = t
                 print('Text loaded')
             else:
                 while 1:
@@ -99,7 +101,9 @@ while 1:
                         else:
                             print('Text not saved')
                             break
-            continue
+        else:
+            print('File not found')
+        continue
 
     if args[0] == 'text':
         if len(args) == 1:
@@ -194,6 +198,7 @@ while 1:
             if args[1] == '-s':
                 handle_crack(t_committed, d, function=stats,
                              fout=sys.stdout.fileno(), fin=sys.stdin.fileno())
+            continue
 
     if args[0] == 'dict':
         if d is None:
@@ -217,15 +222,16 @@ while 1:
             if args[1] == '-l':
                 if len(args) == 3:
                     l = int(args[2])
-                    for i in d:
-                        if len(d[i]) > l:
-                            d.pop(i)
+                    for i in d.get_dict():
+                        if len(d.get_dict()[i]) > l:
+                            d.remove_possible(i)
+
                 else:
                     print('Maximum length missing')
             if args[1] == '-f':
                 if len(args) == 3:
-                    if args[2] in d:
-                        print(d[args[2]])
+                    if args[2] in d.get_dict():
+                        print(d.get_dict()[args[2]])
                     else:
                         print('Key not found')
                 else:
@@ -233,16 +239,16 @@ while 1:
             if args[1] == '-r':
                 if len(args) == 3:
                     l = int(args[2])
-                    if args[2] in d:
-                        d.pop(args[2])
+                    if args[2] in d.get_dict():
+                        d.remove_possible(args[2])
                     else:
                         print('Key not found')
                 else:
                     print('Key word missing')
             if args[1] == '-s':
                 n = 0
-                for k in d:
-                    n += len(d[k])
+                for k in d.get_dict():
+                    n += len(d.get_dict()[k])
             if args[1] == '-c':
                 d = create_dict()
 

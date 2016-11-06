@@ -5,7 +5,6 @@ from src.Progress import Progress
 from src.Dictionary import Dictionary
 from multiprocessing import Process
 import os
-import time
 
 
 def stats(t: Text, d: Dictionary):
@@ -85,7 +84,7 @@ def brute_exploration(d: Dictionary):
         # For each possible word
         for possible in d.get(ciphered):
             # Leave each possible word as a unique solution
-            trimmed_words.pop(ciphered)
+            trimmed_words.remove_possible(ciphered)
             trimmed_words.set(ciphered, [possible])
             temp_alphabet = explore_uniques(trimmed_words, max_alphabet.copy(), [ciphered], 0)
             n += 1
@@ -131,10 +130,6 @@ def handle_subprocess(*args, **kwargs):
         else:
             p2.terminate()
             break
-
-
-
-
 
 p = Patterns('wordPatterns')
 pr = Progress()
