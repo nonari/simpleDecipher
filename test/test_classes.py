@@ -10,6 +10,7 @@ class AlphabetTest(unittest.TestCase):
         self.a = Alphabet()
 
     def test_decipher(self):
+
         ciphered = 'vwjw'
         ciphered_2 = 'wxwpyva'
         exp_deciphered = 'casa'
