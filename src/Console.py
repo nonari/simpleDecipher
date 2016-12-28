@@ -1,7 +1,7 @@
-from src.main import handle_crack
-from src.main import brute_exploration
-from src.main import stats
-from src.main import explore_uniques
+from src.Crack import handle_crack
+from src.Crack import brute_exploration
+from src.Crack import stats
+from src.Crack import explore_uniques
 from src.Alphabet import Alphabet
 from src.Patterns import Patterns
 from src.Text import Text
@@ -30,7 +30,7 @@ def create_dict():
 
         if response == 'y':
             w = t.extract_words()
-            di = Dictionary(p.get_matching_words_dic(w), False)
+            di = Dictionary(p.get_matching_words_dic(w))
             print('Dict created')
             break
         else:
