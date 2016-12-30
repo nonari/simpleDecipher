@@ -64,9 +64,9 @@ class Alphabet:
             # Update ciphered letter for s (s -> c)
             self._ciphering_index[s_code] = c_code
 
-    def match_list(self, l):
-        for words_tuple in l:
-            self.match(words_tuple[0], words_tuple[1])
+    def match_list(self, ciphered_word_list, solved_word_list):
+        for ciphered_word, solved_word in ciphered_word_list, solved_word_list:
+            self.match(ciphered_word, solved_word)
 
     # Method: Checks if, for the already solved letters, ciphered word c matches with exp
     # Input:
@@ -140,6 +140,11 @@ class Alphabet:
     def get_solved_letters(self):
         return self._solved_letters
 
+    # Method: Returns already solved chars
+    # Output: Set of Chars
+    def get_reverse_solved_letters(self):
+        return self._reverse_solved_letters
+
     # Method: Returns the number of matched words
     # Output: Integer
     def get_number_of_words(self):
@@ -150,7 +155,7 @@ class Alphabet:
     # Output: Boolean
     def is_superset(self, a):
         result = True
-        for i in a._solved_letters:
+        for i in a.get_solved_letters():
             if (a.decipher(i) != self.decipher(i)) and (i in self._solved_letters):
                 result = False
                 break

@@ -2,12 +2,47 @@ import unittest
 from src.Alphabet import Alphabet
 from src.Patterns import Patterns
 from src.Text import Text
+import cProfile
+
+setup = """from src.Alphabet import Alphabet\na = Alphabet()\nc='abnxhdyemricousd'\ns='ajduethrncmxlapq'\na.match(c, s)\nb='yemricoqhdsl'"""
 
 
 class AlphabetTest(unittest.TestCase):
 
     def setUp(self):
         self.a = Alphabet()
+
+    def test_match(self):
+        self.a.match("t", "a")
+        self.a.match("t", "b")
+        self.a.match("b", "a")
+        self.a.match("a", "j")
+        self.a.match("r", "q")
+        self.a.match("r", "y")
+        exp_solving_idx = ['j', 'a', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 't', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 'y',
+                           's', 'b', 'u', 'v', 'w', 'x', 'q', 'z']
+        exp_ciphering_idx = ['b', 't', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'a', 'k', 'l', 'm', 'n', 'o', 'p', 'y', 'q',
+                             's', 'j', 'u', 'v', 'w', 'x', 'r', 'z']
+        self.assertListEqual(exp_solving_idx, self.a.get_solving_index())
+        self.assertListEqual(exp_ciphering_idx, self.a.get_ciphering_index())
+
+    def test_contains(self):
+        self.a.match("bdbxihbkkwlb", "abacogalleta")
+        self.assertTrue(self.a.contains("xihikki"))
+
+    def cont(self, n, a):
+        for i in range(n):
+            self.a.contains("xihikki")
+
+    def test_speed(self):
+        a = self.a
+        c = 'abnxhdyemricousd'
+        s = 'ajduethrncmxlapq'
+        b = 'yemricoqhdsl'
+        self.a.match(c, s)
+        pr = cProfile.Profile()
+        t = pr.runcall(self.cont, 1000, self.a)
+        print(t)
 
     def test_decipher(self):
         ciphered = 'vwjw'
