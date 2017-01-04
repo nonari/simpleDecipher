@@ -30,19 +30,20 @@ class AlphabetTest(unittest.TestCase):
         self.a.match("bdbxihbkkwlb", "abacogalleta")
         self.assertTrue(self.a.contains("xihikki"))
 
-    def cont(self, n, a):
-        for i in range(n):
-            self.a.contains("xihikki")
+    # def cont(self):
+    #     for i in range(10000000):
+    #         self.a.contains("xihikki")
 
-    def test_speed(self):
-        a = self.a
-        c = 'abnxhdyemricousd'
-        s = 'ajduethrncmxlapq'
-        b = 'yemricoqhdsl'
-        self.a.match(c, s)
-        pr = cProfile.Profile()
-        t = pr.runcall(self.cont, 1000, self.a)
-        print(t)
+    # def test_speed(self):
+    #     c = 'abnxhdyemricousd'
+    #     s = 'ajduethrncmxlapq'
+    #     b = 'yemricoqhdsl'
+    #     self.a.match(c, s)
+    #     pr = cProfile.Profile()
+    #     pr.enable()
+    #     pr.runcall(self.cont)
+    #     pr.disable()
+    #     pr.print_stats()
 
     def test_decipher(self):
         ciphered = 'vwjw'
