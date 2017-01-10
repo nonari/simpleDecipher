@@ -52,7 +52,7 @@ class Alphabet:
             temp = self._solving_index[c_code]
             # Update solved letter for c (c -> s)
             self._solving_index[c_code] = s_code
-            # Save previous ciphered letter for s (s -> c')
+
             temp2 = self._ciphering_index[s_code]
             # Update solved letter for c' (c' -> s')
             self._solving_index[temp2] = temp
