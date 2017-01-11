@@ -45,10 +45,10 @@ def explore_uniques(d: Dictionary, a: Alphabet, uniques: list, n):
         # Solve for the first unique and remove it
         first = uniques.pop(0)
         if len(uniques) == 0:
-            pr.leaf((first, d.get(first)[0]))
+            pr.leaf((first, d.get_solutions(first)[0]))
         else:
-            pr.node((first, d.get(first)[0]))
-        a.match(first, d.get(first)[0])
+            pr.node((first, d.get_solutions(first)[0]))
+        a.match(first, d.get_solutions(first)[0])
         # Recheck words dict for filtering matching words
         d.filter(a)
         # Extract the new unique words
@@ -82,10 +82,10 @@ def brute_exploration(d: Dictionary):
     for ciphered in d.keys():
         trimmed_words = d.copy()
         # For each possible word
-        for possible in d.get(ciphered):
+        for possible in d.get_solutions(ciphered):
             # Leave each possible word as a unique solution
-            trimmed_words.remove_possible(ciphered)
-            trimmed_words.set(ciphered, [possible])
+            trimmed_words.remove_key(ciphered)
+            trimmed_words.push_entry(ciphered, [possible])
             temp_alphabet = explore_uniques(trimmed_words, max_alphabet.copy(), [ciphered], 0)
             n += 1
             if divmod(n, 10)[1] == 0:

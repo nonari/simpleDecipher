@@ -2,9 +2,7 @@ import unittest
 from src.Alphabet import Alphabet
 from src.Patterns import Patterns
 from src.Text import Text
-import cProfile
-
-setup = """from src.Alphabet import Alphabet\na = Alphabet()\nc='abnxhdyemricousd'\ns='ajduethrncmxlapq'\na.match(c, s)\nb='yemricoqhdsl'"""
+# import cProfile
 
 
 class AlphabetTest(unittest.TestCase):
