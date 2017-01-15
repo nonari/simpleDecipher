@@ -5,13 +5,12 @@ from src.Crack import explore_uniques
 from src.Alphabet import Alphabet
 from src.Patterns import Patterns
 from src.Text import Text
-from src.Progress import Progress
 from src.Dictionary import Dictionary
 import os
 import sys
 
 
-p = Patterns('wordPatterns')
+p = Patterns('spanishPatterns')
 t_committed = None
 t = None
 d = None

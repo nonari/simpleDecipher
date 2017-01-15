@@ -1,5 +1,7 @@
 import copy
 import time
+from typing import List
+from src.Alphabet import Alphabet
 
 # Class for handling possible words in spaced texts
 
@@ -10,13 +12,13 @@ class Dictionary:
         self._d = d
 
     def copy(self):
-        s = Dictionary({})
-        s._d = copy.deepcopy(self._d)
-        return s
+        new_dictionary = Dictionary({})
+        new_dictionary._d = copy.deepcopy(self._d)
+        return new_dictionary
 
     # Method: Leave only fitting possibles and remove non possible keys
     # Input: Alphabet
-    def filter(self, alphabet) -> None:
+    def filter(self, alphabet: Alphabet) -> None:
         t1 = time.time()
         # Notice that the .keys method returns a dict_keys object still pointing to the dict
         for ciphered in self._d:
@@ -25,58 +27,50 @@ class Dictionary:
                 self._d.pop(ciphered)
                 continue
             # For each possible word
-            for possible in list(self._d[ciphered]):
+            possibles = list(self._d[ciphered])
+            for possible in possibles:
                 # If the possible word doesn't fits the current solution
                 if not alphabet.fits(ciphered, possible):
                     # Remove the word
-                    self._d[ciphered].remove_key(possible)
+                    possibles.remove(possible)
+            self._d[ciphered] = possibles
             # If there are no possible words remaining
             if len(self._d[ciphered]) == 0:
                 # Remove it from the dict
                 self._d.pop(ciphered)
         t = time.time() - t1
-        print(t)
+        print('Filtered in ' + t + ' ms')
 
     # Method: Returns the single solution words
-    # Output: List
-    def uniques(self):
+    def uniques(self) -> List[str]:
         unique_words = []
-        for word in self._d:
-            if (len(self._d[word]) == 1) & (len(word) > 4):
-                unique_words.append(word)
+        for ciphered in self._d:
+            if len(self._d[ciphered]) == 1:
+                unique_words.append(ciphered)
         unique_words.sort()
         return unique_words
 
     # Method: Removes a word from the dict keys
-    # Input: String (Ciphered word)
-    def remove_key(self, key):
+    def remove_key(self, key: str):
         self._d.pop(key)
 
     # Method: Returns the possible solutions for a ciphered word
-    # Input: String (Ciphered word)
-    # Output: Non-bonded List
-    def get_solutions(self, key):
+    def solutions(self, key: str):
         return list(self._d[key])
 
     # Method: Returns the internal dict
-    # Output: Non-bonded dict
     def get_dict(self):
         return self._d
 
     # Method: Adds a new entry to the dict
-    # Input:
-    #       key: String (Ciphered word)
-    #       possibles: List (Possible words)
-    def push_entry(self, key, possibles: list):
+    def push_entry(self, key: str, possibles: List[str]):
         self._d[key] = possibles
 
     # Method: Returns the dictionary keys
-    # Output: Non-bonded List
-    def keys(self):
+    def keys(self) -> List[str]:
         return list(self._d.keys())
 
     # Method: Returns dictionary size in words
-    # Output: Integer
     def __sizeof__(self):
         size = 0
         for c in self._d:

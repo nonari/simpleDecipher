@@ -2,31 +2,33 @@ import unittest
 from src.Alphabet import Alphabet
 from src.Patterns import Patterns
 from src.Text import Text
+from src.Dictionary import Dictionary
 # import cProfile
 
 
 class AlphabetTest(unittest.TestCase):
 
     def setUp(self):
-        self.a = Alphabet()
+        self.alphabet = Alphabet()
 
     def test_match(self):
-        self.a.match("t", "a")
-        self.a.match("t", "b")
-        self.a.match("b", "a")
-        self.a.match("a", "j")
-        self.a.match("r", "q")
-        self.a.match("r", "y")
+        alphabet = self.alphabet
+        alphabet.match("t", "a")
+        alphabet.match("t", "b")
+        alphabet.match("b", "a")
+        alphabet.match("a", "j")
+        alphabet.match("r", "q")
+        alphabet.match("r", "y")
         exp_solving_idx = ['j', 'a', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 't', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 'y',
                            's', 'b', 'u', 'v', 'w', 'x', 'q', 'z']
         exp_ciphering_idx = ['b', 't', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'a', 'k', 'l', 'm', 'n', 'o', 'p', 'y', 'q',
                              's', 'j', 'u', 'v', 'w', 'x', 'r', 'z']
-        self.assertListEqual(exp_solving_idx, self.a.get_solving_index())
-        self.assertListEqual(exp_ciphering_idx, self.a.get_ciphering_index())
+        self.assertListEqual(exp_solving_idx, alphabet.get_solving_index())
+        self.assertListEqual(exp_ciphering_idx, alphabet.get_ciphering_index())
 
     def test_contains(self):
-        self.a.match("bdbxihbkkwlb", "abacogalleta")
-        self.assertTrue(self.a.contains("xihikki"))
+        self.alphabet.match("bdbxihbkkwlb", "abacogalleta")
+        self.assertTrue(self.alphabet.contains("xihikki"))
 
     # def cont(self):
     #     for i in range(10000000):
@@ -48,10 +50,10 @@ class AlphabetTest(unittest.TestCase):
         ciphered_2 = 'wxwpyva'
         exp_deciphered = 'casa'
         exp_deciphered_2 = 'apatico'
-        self.a.match(ciphered, exp_deciphered)
-        self.a.match(ciphered_2, exp_deciphered_2)
-        deciphered = self.a.decipher(ciphered)
-        deciphered_2 = self.a.decipher(ciphered_2)
+        self.alphabet.match(ciphered, exp_deciphered)
+        self.alphabet.match(ciphered_2, exp_deciphered_2)
+        deciphered = self.alphabet.decipher(ciphered)
+        deciphered_2 = self.alphabet.decipher(ciphered_2)
         self.assertEqual(deciphered, exp_deciphered)
         self.assertEqual(deciphered_2, exp_deciphered_2)
 
@@ -60,52 +62,67 @@ class AlphabetTest(unittest.TestCase):
         exp_ciphered_2 = 'wxwpyva'
         deciphered = 'casa'
         deciphered_2 = 'apatico'
-        self.a.match(exp_ciphered, deciphered)
-        self.a.match(exp_ciphered_2, deciphered_2)
-        ciphered = self.a.cipher(deciphered)
-        ciphered_2 = self.a.cipher(deciphered_2)
+        self.alphabet.match(exp_ciphered, deciphered)
+        self.alphabet.match(exp_ciphered_2, deciphered_2)
+        ciphered = self.alphabet.cipher(deciphered)
+        ciphered_2 = self.alphabet.cipher(deciphered_2)
         self.assertEqual(exp_ciphered, ciphered)
         self.assertEqual(exp_ciphered_2, ciphered_2)
 
     def test_fits(self):
         word = 'sabanamarga'
         ciphered_word = 'xomolofotyo'
-        self.a.match(ciphered_word, word)
-        result = self.a.fits('xomologotyo', 'sabanalarga')
+        self.alphabet.match(ciphered_word, word)
+        result = self.alphabet.fits('xomologotyo', 'sabanalarga')
         self.assertTrue(result)
 
     def test_letter_set(self):
         deciphered = 'farfullar'
         ciphered = 'xdfxghhdf'
         exp_set = {'x', 'd', 'f', 'g', 'h'}
-        self.a.match(ciphered, deciphered)
-        self.assertSetEqual(self.a.get_solved_letters(), exp_set)
+        self.alphabet.match(ciphered, deciphered)
+        self.assertSetEqual(self.alphabet.get_solved_letters(), exp_set)
 
 
 class PatternsTest(unittest.TestCase):
 
     def setUp(self):
-        self.p = Patterns('wordPatterns')
+        self.patterns = Patterns('spanishPatterns')
 
     def test_build_pattern(self):
         word = 'aldaba'
         exp_pattern = '0.1.2.0.3.0'
-        pattern = self.p.pattern(word)
+        pattern = self.patterns.pattern(word)
         self.assertEqual(exp_pattern, pattern)
 
     def test_matching_words(self):
         word = 'aldaba'
-        matching_words = self.p.get_matching_words(word)
+        matching_words = self.patterns.get_matching_words(word)
         self.assertIn(word, matching_words)
 
         word_2 = 'macarron'
-        matching_words_2 = self.p.get_matching_words(word_2)
+        matching_words_2 = self.patterns.get_matching_words(word_2)
         self.assertIn(word_2, matching_words_2)
 
     def test_matching_words_dic(self):
         words = ['aldaba', 'macarron']
-        matching_words = self.p.get_matching_words_dic(words)
+        matching_words = self.patterns.get_matching_words_dic(words)
         self.assertIn(words[0], matching_words[words[0]])
+        self.assertIn(words[1], matching_words[words[1]])
+
+
+class DictionaryTest(unittest.TestCase):
+
+    def setUp(self):
+        self.patterns = Patterns('spanishPatterns')
+        self.dictionary = Dictionary({})
+
+    def test_uniques(self):
+        self.dictionary.push_entry('xsfs', ["dogo"])
+        self.dictionary.push_entry('kilde', ["movil", "capon", "caton"])
+        self.dictionary.push_entry('sabana', ["cabana", "calana"])
+        uniques = self.dictionary.uniques()
+        self.assertListEqual(uniques, ["xsfs"])
 
 
 class TextTest(unittest.TestCase):
