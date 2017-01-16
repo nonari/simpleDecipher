@@ -124,6 +124,13 @@ class DictionaryTest(unittest.TestCase):
         uniques = self.dictionary.uniques()
         self.assertListEqual(uniques, ["xsfs"])
 
+    def test_filter(self):
+        alphabet = Alphabet()
+        self.dictionary.push_entry('xsfs', ["dogo"])
+        self.dictionary.push_entry('kilde', ["movil", "capon", "caton"])
+        self.dictionary.push_entry('sabana', ["cabana", "calana"])
+        self.dictionary.filter(alphabet)
+        self.
 
 class TextTest(unittest.TestCase):
 
