@@ -139,7 +139,7 @@ class Alphabet:
         return True
 
     def __str__(self):
-        solving_str = 'Solving index: ' + self.get_solving_index().__str__()
+        solving_str = 'Solving index: ' + self.get_ciphering_index().__str__()
         ciphering_str = 'Ciphering index: ' + self.get_ciphering_index().__str__()
         solved_letters_str = 'Solved letters:' + self.get_solved_letters().__str__()
         reverse_solved_letters_str = "Reverse solved:" + self.get_reverse_solved_letters.__str__()
