@@ -23,7 +23,7 @@ class Patterns:
         # Search at the pattern dictionary for the pattern
         if pattern in self._patterns:
             # Return list of matching words if found
-            return self._patterns[pattern].copy()
+            return list(self._patterns[pattern])
         else:
             return []
 

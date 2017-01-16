@@ -126,24 +126,31 @@ class DictionaryTest(unittest.TestCase):
 
     def test_filter(self):
         alphabet = Alphabet()
-        self.dictionary.push_entry('xsfs', ["dogo"])
-        self.dictionary.push_entry('kilde', ["movil", "capon", "caton"])
-        self.dictionary.push_entry('sabana', ["cabana", "calana"])
+        alphabet.match('sz', 'oy')
+        exp_dict = {'xsfs': ['dogo'],
+                    'lebene': ['cabana']
+                    }
+        self.dictionary.push_entry('xsfs', ['dogo'])
+        self.dictionary.push_entry('zszs', ['yoyo', 'mama'])
+        self.dictionary.push_entry('kilde', ['movil', 'capon', 'caton', 'jabon'])
+        self.dictionary.push_entry('lebene', ['cabana', 'colono'])
         self.dictionary.filter(alphabet)
-        self.
+        self.assertDictEqual(exp_dict, self.dictionary.get_dict())
+
 
 class TextTest(unittest.TestCase):
 
     def setUp(self):
-        ciphered_text = open('texts/reto_12.txt', encoding='iso-8859-1').read()
+        ciphered_text = ''
         self.t = Text(ciphered_text)
 
     def test_symbols(self):
         self.t.normalize_text()
 
     def test_reduce_key(self):
-        ciphered_text = open('texts/reto_07.txt', encoding='iso-8859-1').read()
-        self.t = Text(ciphered_text)
+        pass
+        # ciphered_text = open('texts/reto_07.txt', encoding='iso-8859-1').read()
+        # self.t = Text(ciphered_text)
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(AlphabetTest)
