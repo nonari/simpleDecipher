@@ -21,7 +21,7 @@ class Dictionary:
     def filter(self, alphabet: Alphabet) -> None:
         t1 = time.time()
         # Notice that the .keys method returns a dict_keys object still pointing to the dict
-        for ciphered in self._d:
+        for ciphered in list(self._d.keys()):
             # If word is contained in the solution, remove it
             if alphabet.contains(ciphered):
                 self._d.pop(ciphered)
@@ -32,14 +32,13 @@ class Dictionary:
                 # If the possible word doesn't fits the current solution
                 if not alphabet.fits(ciphered, possible):
                     # Remove the word
-                    possibles.remove(possible)
-            self._d[ciphered] = possibles
+                    self._d[ciphered].remove(possible)
             # If there are no possible words remaining
             if len(self._d[ciphered]) == 0:
                 # Remove it from the dict
                 self._d.pop(ciphered)
         t = time.time() - t1
-        print('Filtered in ' + t + ' ms')
+        print('Filtered in ' + t.__str__() + ' ms')
 
     # Method: Returns the single solution words
     def uniques(self) -> List[str]:
