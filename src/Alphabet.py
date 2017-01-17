@@ -21,8 +21,8 @@ class Alphabet:
         self._ciphering_index = []
         # Initializes each array with 25 numbers each representing an ASCII letter (a-z)
         for i in range(0, 26):
-            self._solving_index.append(i)
-            self._ciphering_index.append(i)
+            self._solving_index.append('?')
+            self._ciphering_index.append('?')
 
     # Method: Returns a self copy
     # Output: Alphabet
@@ -43,23 +43,16 @@ class Alphabet:
         self._number_of_words += 1
         # For each char in the parameters update the indexes
         for i in range(len(ciphered)):
+        # Idempotent block
             self._solved_letters.add(ciphered[i])
             self._reverse_solved_letters.add(solved[i])
             # Convert chars to ASCII code
             c_code = ord(ciphered[i]) - 97
             s_code = ord(solved[i]) - 97
-            # Save previous solved letter for c (c -> s')
-            temp = self._solving_index[c_code]
-            # Update solved letter for c (c -> s)
-            self._solving_index[c_code] = s_code
-
-            temp2 = self._ciphering_index[s_code]
-            # Update solved letter for c' (c' -> s')
-            self._solving_index[temp2] = temp
-            # Update solved letter for s' (s' -> c')
-            self._ciphering_index[temp] = temp2
-            # Update ciphered letter for s (s -> c)
-            self._ciphering_index[s_code] = c_code
+            # Solved letter for c
+            self._solving_index[c_code] = solved[i]
+            # Ciphered letter for s
+            self._ciphering_index[s_code] = ciphered[i]
 
     def match_list(self, ciphered_words: List[str], solved_words: List[str]) -> None:
         for ciphered_word, solved_word in ciphered_words, solved_words:
@@ -92,7 +85,7 @@ class Alphabet:
         deciphered_word = ''
         # Matches each char from the input String with a char at the solving_index
         for i in word:
-            deciphered_word += chr(self._solving_index[ord(i) - 97] + 97)
+            deciphered_word += self._solving_index[ord(i) - 97]
         return deciphered_word
 
     # Method: Ciphers word with the current index state
@@ -100,24 +93,16 @@ class Alphabet:
         ciphered_word = ''
         # Matches each char from the input String with a char at the ciphering_index
         for i in word:
-            ciphered_word += chr(self._ciphering_index[ord(i) - 97] + 97)
+            ciphered_word += self._ciphering_index[ord(i) - 97]
         return ciphered_word
 
     # Method: Returns solving index
     def get_solving_index(self) -> List[str]:
-        solving_chars_idx = []
-        # Converts the internal representation into Chars
-        for i in range(0, 26):
-            solving_chars_idx.append(chr(self._solving_index[i] + 97))
-        return solving_chars_idx
+        return self._solving_index
 
     # Method: Returns ciphering index
     def get_ciphering_index(self) -> List[str]:
-        ciphering_chars_idx = []
-        # Converts the internal representation into Chars
-        for i in range(0, 26):
-            ciphering_chars_idx.append(chr(self._ciphering_index[i] + 97))
-        return ciphering_chars_idx
+        return self._ciphering_index
 
     # Method: Returns already solved chars
     def get_solved_letters(self) -> Set[str]:
