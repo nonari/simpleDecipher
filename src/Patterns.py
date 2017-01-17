@@ -1,4 +1,5 @@
 import importlib
+from typing import Dict, List
 
 # Class for handling word patterns
 
@@ -16,20 +17,18 @@ class Patterns:
     # Method: Returns a list of matching words for a given word
     # Input: String (Word)
     # Output: List of strings
-    def get_matching_words(self, word):
+    def get_matching_words(self, word: str) -> List[str]:
         # Obtain the word pattern
         pattern = self.pattern(word)
         # Search at the pattern dictionary for the pattern
         if pattern in self._patterns:
             # Return list of matching words if found
-            return self._patterns[pattern].copy()
+            return list(self._patterns[pattern])
         else:
             return []
 
     # Method: Returns a list of matching words for each given word
-    # Input: List of strings (Words)
-    # Output: Dic of strings
-    def get_matching_words_dic(self, words):
+    def get_matching_words_dic(self, words: List[str]) -> Dict[str, str]:
         matching_words_dic = {}
         for word in words:
             matching_list = self.get_matching_words(word)
@@ -41,7 +40,7 @@ class Patterns:
     # Input: String (Word)
     # Output: String (Pattern)
     @staticmethod
-    def pattern(word):
+    def pattern(word: str) -> str:
         next_num = 0
         letter_set = {}
         word_pattern = []

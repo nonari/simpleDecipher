@@ -5,13 +5,12 @@ from src.Crack import explore_uniques
 from src.Alphabet import Alphabet
 from src.Patterns import Patterns
 from src.Text import Text
-from src.Progress import Progress
 from src.Dictionary import Dictionary
 import os
 import sys
 
 
-p = Patterns('wordPatterns')
+p = Patterns('spanishPatterns')
 t_committed = None
 t = None
 d = None
@@ -224,7 +223,7 @@ while 1:
                     l = int(args[2])
                     for i in d.get_dict():
                         if len(d.get_dict()[i]) > l:
-                            d.remove_possible(i)
+                            d.remove_key(i)
 
                 else:
                     print('Maximum length missing')
@@ -240,7 +239,7 @@ while 1:
                 if len(args) == 3:
                     l = int(args[2])
                     if args[2] in d.get_dict():
-                        d.remove_possible(args[2])
+                        d.remove_key(args[2])
                     else:
                         print('Key not found')
                 else:
