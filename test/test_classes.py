@@ -152,6 +152,23 @@ class TextTest(unittest.TestCase):
         # ciphered_text = open('texts/reto_07.txt', encoding='iso-8859-1').read()
         # self.t = Text(ciphered_text)
 
+class IntegrationTest(unittest.TestCase):
+
+    def test_correctDecipheredWord(self):
+        patterns = Patterns('spanishPatterns')
+        ciphered_text = 'eyvuxybsiaybuxiebuia' #rubicundosunicornios
+        text = Text(ciphered_text)
+        possible_words = text.extract_words()
+        print(possible_words)
+        dict = patterns.get_matching_words_dic(possible_words)
+        print(dict)
+        dictionary = Dictionary(dict)
+        alphabet = Alphabet()
+        alphabet.match('ey', 'ru')
+        dictionary.filter(alphabet)
+        print(dictionary.uniques())
+
+
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(AlphabetTest)
     unittest.TextTestRunner(verbosity=2).run(suite)
