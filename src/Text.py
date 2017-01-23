@@ -9,8 +9,8 @@ class Text:
     # Input: String (Ciphered text)
     def __init__(self, text):
         self._text = text
-        # Defaults the space symbol to ' '
-        self._space_symbol = ''
+        # Defaults the space symbol to None
+        self._space_symbol = None
 
     # Method: Sets the space symbol equivalence
     # Input: Char
@@ -139,9 +139,9 @@ class Text:
     # Method: Extract possible words
     # Output: List of Strings
     def extract_words(self):
-        if self._space_symbol == ' ':
+        if self._space_symbol != None:
             words = []
-            for word in self._text.split(' '):
+            for word in self._text.split(self._space_symbol):
                 if len(word) > 5:
                     words.append(word)
         else:

@@ -1,4 +1,7 @@
 import unittest
+
+from builtins import print
+
 from src.Alphabet import Alphabet
 from src.Patterns import Patterns
 from src.Text import Text
@@ -19,16 +22,20 @@ class AlphabetTest(unittest.TestCase):
         alphabet.match("a", "j")
         alphabet.match("r", "q")
         alphabet.match("r", "y")
-        exp_solving_idx = ['j', 'a', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 't', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 'y',
-                           's', 'b', 'u', 'v', 'w', 'x', 'q', 'z']
-        exp_ciphering_idx = ['b', 't', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'a', 'k', 'l', 'm', 'n', 'o', 'p', 'y', 'q',
-                             's', 'j', 'u', 'v', 'w', 'x', 'r', 'z']
+        exp_solving_idx = ['j', 'a', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?',
+                            'y', '?', 'b', '?', '?', '?', '?', '?', '?']
+        exp_ciphering_idx = ['b', 't', '?', '?', '?', '?', '?', '?', '?', 'a', '?', '?', '?', '?', '?', '?', 'r',
+                             '?', '?', '?', '?', '?', '?', '?', 'r', '?']
         self.assertListEqual(exp_solving_idx, alphabet.get_solving_index())
         self.assertListEqual(exp_ciphering_idx, alphabet.get_ciphering_index())
 
     def test_contains(self):
         self.alphabet.match("bdbxihbkkwlb", "abacogalleta")
         self.assertTrue(self.alphabet.contains("xihikki"))
+
+    def test_new(self):
+        self.alphabet.match("t", "a")
+        print(self.alphabet.get_solving_index())
 
     # def cont(self):
     #     for i in range(10000000):
@@ -141,7 +148,7 @@ class DictionaryTest(unittest.TestCase):
 class TextTest(unittest.TestCase):
 
     def setUp(self):
-        ciphered_text = ''
+        ciphered_text = 'eyvuxybsia'
         self.t = Text(ciphered_text)
 
     def test_symbols(self):
