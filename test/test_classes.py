@@ -156,7 +156,7 @@ class IntegrationTest(unittest.TestCase):
 
     def test_correctDecipheredWord(self):
         patterns = Patterns('spanishPatterns')
-        ciphered_text = 'eyvuxybsiaybuxiebuiaciklelb' #rubicundosunicornios
+        ciphered_text = 'eyvuxybsiaybuxiebuiaaivewciklelb' #rubicundosunicornios
         text = Text(ciphered_text)
         possible_words = text.extract_words()
         print(possible_words)
@@ -171,7 +171,7 @@ class IntegrationTest(unittest.TestCase):
         print(l)
         print(dictionary.solutions(l[0]))
         print(dictionary.solutions(l[1]))
-        print(dictionary.solutions(l[2]))
+        # print(dictionary.solutions(l[2]))
 
 
 if __name__ == '__main__':
