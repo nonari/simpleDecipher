@@ -43,7 +43,6 @@ class Alphabet:
         self._number_of_words += 1
         # For each char in the parameters update the indexes
         for i in range(len(ciphered)):
-        # Idempotent block
             self._solved_letters.add(ciphered[i])
             self._reverse_solved_letters.add(solved[i])
             # Convert chars to ASCII code
