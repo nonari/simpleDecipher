@@ -3,8 +3,6 @@ import time
 
 class Progress:
 
-    # Constructor
-    # Input:
     def __init__(self):
         # Timestamp
         self._timestamp = time.time()
@@ -25,19 +23,25 @@ class Progress:
         # Current words path
         self._temp_path_words = []
 
-    def node(self, word):
+    def node(self, word: tuple):
         if divmod(self._node_counter, 100000)[1] == 0:
             print(self.stats())
+        print('Node: ' + self._node_counter.__str__())
+        print('Current: ' + word.__str__())
         self._node_counter += 1
         self._current_depth += 1
         self._temp_path_words.append(word)
 
-    def node_up(self):
+    def node_up(self) -> str:
+        print('')
+        print('Up ↑')
         if self._current_depth > 0:
             self._current_depth -= 1
-            self._temp_path_words.pop(-1)
+            return self._temp_path_words.pop(-1)
 
     def leaf(self, word):
+        print('Node: ' + self._node_counter.__str__() + ' (Leaf)')
+        print('Current: ' + word.__str__())
         self._temp_path_words.append(word)
         if len(self._temp_path_words) > len(self._path_words):
             self._path_words = self._temp_path_words.copy()
@@ -50,7 +54,7 @@ class Progress:
         self._leaf_nodes += 1
 
     def root(self):
-        print(self.stats())
+        print('ROOT')
         self._current_depth = 0
         self._node_counter += 1
 

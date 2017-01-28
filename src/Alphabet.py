@@ -11,6 +11,8 @@ class Alphabet:
     def __init__(self):
         # Number of words matched
         self._number_of_words = 0
+        # Number of placed letters
+        self._number_of_placed_letters = 0
         # Set of solved letters (ciphered)
         self._solved_letters = set()
         # Set of reverse solved letters (deciphered)
@@ -32,6 +34,8 @@ class Alphabet:
         a_clone._solving_index = self._solving_index.copy()
         a_clone._ciphering_index = self._ciphering_index.copy()
         a_clone._solved_letters = self._solved_letters.copy()
+        a_clone._reverse_solved_letters = self._reverse_solved_letters.copy()
+        a_clone._number_of_placed_letters = self._number_of_placed_letters
         return a_clone
 
     # Method: Match c with s
@@ -43,6 +47,7 @@ class Alphabet:
         self._number_of_words += 1
         # For each char in the parameters update the indexes
         for i in range(len(ciphered)):
+            self._number_of_placed_letters += 1
             self._solved_letters.add(ciphered[i])
             self._reverse_solved_letters.add(solved[i])
             # Convert chars to ASCII code
@@ -115,6 +120,9 @@ class Alphabet:
     def get_number_of_words(self) -> int:
         return self._number_of_words
 
+    def get_number_of_placed_letters(self) -> int:
+        return self._number_of_placed_letters
+
     # Method: Checks if this alphabet is a superset of a given one
     def is_superset(self, a) -> bool:
         for i in a.get_solved_letters():
@@ -123,10 +131,10 @@ class Alphabet:
         return True
 
     def __str__(self):
-        solving_str = 'Solving index: ' + self.get_ciphering_index().__str__()
+        solving_str = 'Solving index: ' + self.get_solving_index().__str__()
         ciphering_str = 'Ciphering index: ' + self.get_ciphering_index().__str__()
-        solved_letters_str = 'Solved letters:' + self.get_solved_letters().__str__()
-        reverse_solved_letters_str = "Reverse solved:" + self.get_reverse_solved_letters.__str__()
+        solved_letters_str = '         Solved letters: ' + self.get_solved_letters().__str__()
+        reverse_solved_letters_str = "         Reverse solved: " + self.get_reverse_solved_letters().__str__()
         result_str = 'Alphabet {' + solving_str + '\n        ' + ciphering_str + '\n' \
                      + solved_letters_str + '\n' +  reverse_solved_letters_str
         return result_str

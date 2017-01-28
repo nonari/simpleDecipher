@@ -6,6 +6,7 @@ from src.Alphabet import Alphabet
 from src.Patterns import Patterns
 from src.Text import Text
 from src.Dictionary import Dictionary
+import Crack
 # import cProfile
 
 
@@ -148,11 +149,23 @@ class DictionaryTest(unittest.TestCase):
 class TextTest(unittest.TestCase):
 
     def setUp(self):
-        ciphered_text = 'eyvuxybsia'
-        self.t = Text(ciphered_text)
+        ciphered_text = 'xylbsiwbklswbrls'
+        self.text = Text(ciphered_text)
 
     def test_symbols(self):
-        self.t.normalize_text()
+        self.text.normalize_text()
+
+    def test_extract(self):
+        possible_words = self.text.extract_words()
+        expected_possible_words = ['xylbs', 'ylbsi', 'lbsiw', 'bsiwb', 'siwbk', 'iwbkl', 'wbkls', 'swbrl', 'wbrls',
+                                   'xylbsi', 'ylbsiw', 'iwbkls', 'wbklsw', 'bklswb', 'swbrls',
+                                   'xylbsiwbklswbrl', 'ylbsiwbklswbrls' ]
+        result = True
+        for word in expected_possible_words:
+            if not possible_words.__contains__(word):
+                result = False
+                break
+        assert(result)
 
     def test_reduce_key(self):
         pass
@@ -166,20 +179,65 @@ class IntegrationTest(unittest.TestCase):
         ciphered_text = 'eyvuxybsiaybuxiebuiaaivewciklelb' #rubicundosunicornios
         text = Text(ciphered_text)
         possible_words = text.extract_words()
-        print(possible_words)
         dict = patterns.get_matching_words_dic(possible_words)
-        print(dict)
         dictionary = Dictionary(dict)
         alphabet = Alphabet()
         alphabet.match('ey', 'ru')
         dictionary.filter(alphabet)
-        print(dictionary.get_dict())
-        l = dictionary.uniques()
-        print(l)
-        print(dictionary.solutions(l[0]))
-        print(dictionary.solutions(l[1]))
-        # print(dictionary.solutions(l[2]))
+        unique_words_found = dictionary.uniques()
+        expected_uniques = ['eyvuxybsi', 'ybuxiebuia']
+        self.assertIn(expected_uniques[0], unique_words_found)
+        self.assertIn(expected_uniques[1], unique_words_found)
 
+class CrackTextWithUniqueWordsTest(unittest.TestCase):
+
+    def setUp(self):
+        patterns = Patterns('spanishPatterns')
+                       # rubicundosunicorniosvolaranllameantes
+        ciphered_text = 'eyvuxybsiaybuxiebuiaciklelbkklnwlbrwa'
+        text = Text(ciphered_text)
+        possible_words = text.extract_words()
+        dict = patterns.get_matching_words_dic(possible_words)
+        self.dictionary = Dictionary(dict)
+        self.alphabet = Alphabet()
+
+    def test_uniques(self):
+        solved_alphabet = Crack.explore_uniques(self.dictionary, self.alphabet, [])
+        solved_text = solved_alphabet.decipher('eyvuxybsiaybuxiebuiaciklelbkklnwlbrwa')
+        expected_solved_text = 'rubicundosunicornios?olaranllameantes'
+        self.assertEquals(solved_text, expected_solved_text)
+
+    def test_stats(self):
+        pass
+
+class CrackTextWithoutUniqueWords(unittest.TestCase):
+
+    def setUp(self):
+        patterns = Patterns('spanishPatterns')
+                       # fronteradelosbesosseranmananacuandoenladentadurasientasunarma
+        ciphered_text = 'deibrwelswkiavwaiaawelbnlblblxylbsiwbklswbrlsyelauwbrlayblenl'
+        self.text = Text(ciphered_text)
+        possible_words = self.text.extract_words()
+        dict = patterns.get_matching_words_dic(possible_words)
+        self.dictionary = Dictionary(dict)
+        self.alphabet = Alphabet()
+        self.alphabet.match('qwertyuiopasdfghjklzxcvbnm', 'wertyuiopqsdfghjklaxcvbnmz')
+        print(self.alphabet.decipher('deibrwelswkiavwaiaawelbnlblblxylbsiwbklswbrlsyelauwbrlayblenl'))
+        ciphered_possibles = list(self.dictionary.keys())
+        print(possible_words)
+        for e in ciphered_possibles:
+            print(e)
+            print(len(self.dictionary.solutions(e)))
+
+    def test_stats(self):
+        solved_alphabet = Crack.stats(self.text, self.dictionary)
+        solved_text = solved_alphabet.decipher('deibrwelswkiavwaiaawelbnlblblxylbsiwbklswbrlsyelauwbrlayblenl')
+        print(solved_text)
+
+    def test_brute(self):
+        solved_alphabet = Crack.brute_exploration(self.dictionary)
+        solved_text = solved_alphabet.decipher('deibrwelswkiavwaiaawelbnlblblxylbsiwbklswbrlsyelauwbrlayblenl')
+        print(solved_text)
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(AlphabetTest)

@@ -7,56 +7,62 @@ from multiprocessing import Process
 import os
 
 
-def stats(t: Text, d: Dictionary):
-    l = [('a', 'e'), ('a', 'o'), ('a', 's'), ('a', 'n'), ('e', 'o'), ('e', 's'),
+def stats(text: Text, dictionary: Dictionary):
+    usual_tuples = [('a', 'e'), ('a', 'o'), ('a', 's'), ('a', 'n'), ('e', 'o'), ('e', 's'),
          ('e', 'n'), ('o', 's'), ('o', 'n'), ('s', 'n')]
-    l_t = t.letter_stats()[:9]
-    s_tuples = []
-    for t in l:
-        for a in l_t:
-            for b in l_t:
+    text_letters_count = text.letter_stats()[:2]
+    combined_tuples = []
+    for tuple in usual_tuples:
+        for a in text_letters_count:
+            for b in text_letters_count:
                 if b != a:
-                    s_tuples.insert(0, ((a[0], t[0]), (b[0], t[1])))
-    a = Alphabet()
-    a_copy = a.copy()
+                    combined_tuples.insert(0, ((a[0], tuple[0]), (b[0], tuple[1])))
+    print(combined_tuples)
+    alphabet = Alphabet()
     n = 0
-    max_alphabet = a
-    for t in s_tuples:
-        a.match(t[0][0], t[0][1])
-        a.match(t[0][0], t[0][1])
-        dc = d.copy()
-        dc.filter(a)
-        temp_alphabet = explore_uniques(dc, a, [], 0)
+    max_alphabet = alphabet
+    for tuple in combined_tuples:
+        alphabet.match(tuple[0][0], tuple[0][1])
+        alphabet.match(tuple[1][0], tuple[1][1])
+        dictionary_copy = dictionary.copy()
+        dictionary_copy.filter(alphabet)
+        temp_alphabet = explore_uniques(dictionary_copy, alphabet, [], 0)
+        alphabet = Alphabet()
         n += 1
-        if divmod(n, 10)[1] == 0:
+        if divmod(n, 10) == 0:
             print(pr.stats())
-            print(chr(27) + "[2J")
-            print('(', n, '/', len(s_tuples), ')')
+            print(chr(27) + "[2J") #Para que servia esta brujeria?
+            print('(', n, '/', len(combined_tuples), ')')
         # Choose the deepest result from each branch of the tree
-        if len(temp_alphabet.get_solved_letters()) > len(max_alphabet.get_solved_letters()):
+        if temp_alphabet.get_number_of_placed_letters() > max_alphabet.get_number_of_placed_letters():
             max_alphabet = temp_alphabet
-        a = a_copy.copy()
     return max_alphabet
     
 
-def explore_uniques(d: Dictionary, a: Alphabet, uniques: list, n: int):
+def explore_uniques(d: Dictionary, a: Alphabet, uniques: list, n: int = 0) -> Alphabet:
     # If not root node OR uniques remaining, try the solution
+    print('')
     if n > 0:
-        # Solve for the first unique and remove it
-        first = uniques.pop(0)
-        if len(uniques) == 0:
-            pr.leaf((first, d.solutions(first)[0]))
-        else:
-            pr.node((first, d.solutions(first)[0]))
-        a.match(first, d.solutions(first)[0])
-        # Recheck words dict for filtering matching words
+        print('Uniques for filter: ' + uniques.__str__())
+        first = uniques[0]
+        solution = d.solutions(first)[0]
+        a.match(first, solution)
+        print(a.get_number_of_placed_letters())
+        print(a.get_number_of_words())
         d.filter(a)
-        # Extract the new unique words
         uniques = d.uniques()
+
+        print('Next uniques: ' + uniques.__str__())
+        if len(uniques) == 0:
+            pr.leaf((first, solution))
+        else:
+            pr.node((first, solution))
     else:
         pr.root()
         if len(uniques) == 0:
             uniques = d.uniques()
+        print('Uniques: ' + uniques.__str__())
+
     # Explore the next nodes with the new uniques and return the max result
     max_alphabet = a
     n += 1
@@ -65,12 +71,11 @@ def explore_uniques(d: Dictionary, a: Alphabet, uniques: list, n: int):
         nth_word = uniques.pop(i)
         uniques.insert(0, nth_word)
         temp_alphabet = explore_uniques(d.copy(), a.copy(), uniques.copy(), n)
-        if n == 0:
-            print(len(uniques))
         # Choose the deepest result from each branch of the tree
-        if len(temp_alphabet.get_solved_letters()) > len(max_alphabet.get_solved_letters()):
+        if temp_alphabet.get_number_of_placed_letters() > max_alphabet.get_number_of_placed_letters():
             max_alphabet = temp_alphabet
-    pr.node_up()
+        print(pr.node_up())
+
     return max_alphabet
 
 
@@ -79,16 +84,19 @@ def brute_exploration(d: Dictionary):
     max_alphabet = Alphabet()
     n = 0
     l = d.__sizeof__()
-    for ciphered in d.keys():
-        trimmed_words = d.copy()
+    ciphered_possibles = list(d.keys())
+    for ciphered in ciphered_possibles:
+        if len(d.solutions(ciphered)) > 200:
+            continue
+        trimmed_dictionary = d.copy()
         # For each possible word
         for possible in d.solutions(ciphered):
             # Leave each possible word as a unique solution
-            trimmed_words.remove_key(ciphered)
-            trimmed_words.push_entry(ciphered, [possible])
-            temp_alphabet = explore_uniques(trimmed_words, max_alphabet.copy(), [ciphered], 0)
+            trimmed_dictionary.remove_key(ciphered)
+            trimmed_dictionary.push_entry(ciphered, [possible])
+            temp_alphabet = explore_uniques(trimmed_dictionary, max_alphabet.copy(), [ciphered], 0)
             n += 1
-            if divmod(n, 10)[1] == 0:
+            if divmod(n, 10) == 0:
                 print(pr.stats())
                 print(chr(27) + "[2J")
                 print('(', n, '/', l, ')')
@@ -126,5 +134,4 @@ def handle_subprocess(*args, **kwargs):
             p2.terminate()
             break
 
-p = Patterns('wordPatterns')
 pr = Progress()
