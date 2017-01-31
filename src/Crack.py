@@ -1,5 +1,5 @@
+from typing import List
 from src.Alphabet import Alphabet
-from src.Patterns import Patterns
 from src.Text import Text
 from src.Progress import Progress
 from src.Dictionary import Dictionary
@@ -8,49 +8,48 @@ import os
 
 
 def stats(text: Text, dictionary: Dictionary):
-    usual_tuples = [('a', 'e'), ('a', 'o'), ('a', 's'), ('a', 'n'), ('e', 'o'), ('e', 's'),
-         ('e', 'n'), ('o', 's'), ('o', 'n'), ('s', 'n')]
+    usual_letters = [('a', 'e'), ('a', 'o'), ('a', 's'), ('a', 'n'), ('e', 'o'), ('e', 's'),
+                     ('e', 'n'), ('o', 's'), ('o', 'n'), ('s', 'n')]
     text_letters_count = text.letter_stats()[:2]
-    combined_tuples = []
-    for tuple in usual_tuples:
+    combined_letters = []
+    for combination in usual_letters:
         for a in text_letters_count:
             for b in text_letters_count:
                 if b != a:
-                    combined_tuples.insert(0, ((a[0], tuple[0]), (b[0], tuple[1])))
-    print(combined_tuples)
-    alphabet = Alphabet()
+                    combined_letters.insert(0, ((a[0], combination[0]), (b[0], combination[1])))
+    print(combined_letters)
     n = 0
-    max_alphabet = alphabet
-    for tuple in combined_tuples:
-        alphabet.match(tuple[0][0], tuple[0][1])
-        alphabet.match(tuple[1][0], tuple[1][1])
-        dictionary_copy = dictionary.copy()
-        dictionary_copy.filter(alphabet)
-        temp_alphabet = explore_uniques(dictionary_copy, alphabet, [], 0)
+    solutions = []
+    for combination in combined_letters:
         alphabet = Alphabet()
+        alphabet.match(combination[0][0], combination[0][1])
+        alphabet.match(combination[1][0], combination[1][1])
+        dictionary_copy = dictionary.__deepcopy__
+        dictionary_copy.filter(alphabet)
+        solutions += explore_uniques(dictionary_copy, alphabet, [], 0)
         n += 1
         if divmod(n, 10) == 0:
             print(pr.stats())
-            print(chr(27) + "[2J") #Para que servia esta brujeria?
-            print('(', n, '/', len(combined_tuples), ')')
+            print(chr(27) + "[2J")  # Para que servia esta brujeria?
+            print('(', n, '/', len(combined_letters), ')')
         # Choose the deepest result from each branch of the tree
-        if temp_alphabet.get_number_of_placed_letters() > max_alphabet.get_number_of_placed_letters():
-            max_alphabet = temp_alphabet
-    return max_alphabet
+        # if temp_alphabet.get_number_of_placed_letters() > max_alphabet.get_number_of_placed_letters():
+        #     max_alphabet = temp_alphabet
+    return solutions
     
 
-def explore_uniques(d: Dictionary, a: Alphabet, uniques: list, n: int = 0) -> Alphabet:
+def explore_uniques(dictionary: Dictionary, alphabet: Alphabet, uniques: list, n: int = 0) -> List[Alphabet]:
     # If not root node OR uniques remaining, try the solution
     print('')
     if n > 0:
         print('Uniques for filter: ' + uniques.__str__())
         first = uniques[0]
-        solution = d.solutions(first)[0]
-        a.match(first, solution)
-        print(a.get_number_of_placed_letters())
-        print(a.get_number_of_words())
-        d.filter(a)
-        uniques = d.uniques()
+        solution = dictionary.solutions(first)[0]
+        alphabet.match(first, solution)
+        print(alphabet.get_number_of_placed_letters())
+        print(alphabet.get_number_of_words())
+        dictionary.filter(alphabet)
+        uniques = dictionary.uniques()
 
         print('Next uniques: ' + uniques.__str__())
         if len(uniques) == 0:
@@ -60,23 +59,24 @@ def explore_uniques(d: Dictionary, a: Alphabet, uniques: list, n: int = 0) -> Al
     else:
         pr.root()
         if len(uniques) == 0:
-            uniques = d.uniques()
+            uniques = dictionary.uniques()
         print('Uniques: ' + uniques.__str__())
 
     # Explore the next nodes with the new uniques and return the max result
-    max_alphabet = a
+    max_alphabet = alphabet
     n += 1
+    solutions = [max_alphabet]
     for i in range(len(uniques)):
         # Swap the nth word to the first position
         nth_word = uniques.pop(i)
         uniques.insert(0, nth_word)
-        temp_alphabet = explore_uniques(d.copy(), a.copy(), uniques.copy(), n)
+        solutions += explore_uniques(dictionary.__deepcopy__, alphabet.__deepcopy__(), uniques.copy(), n)
         # Choose the deepest result from each branch of the tree
-        if temp_alphabet.get_number_of_placed_letters() > max_alphabet.get_number_of_placed_letters():
-            max_alphabet = temp_alphabet
+        # if temp_alphabet.get_number_of_placed_letters() > max_alphabet.get_number_of_placed_letters():
+        #     max_alphabet = temp_alphabet
         print(pr.node_up())
 
-    return max_alphabet
+    return solutions
 
 
 def brute_exploration(d: Dictionary):
@@ -88,21 +88,21 @@ def brute_exploration(d: Dictionary):
     for ciphered in ciphered_possibles:
         if len(d.solutions(ciphered)) > 200:
             continue
-        trimmed_dictionary = d.copy()
+        trimmed_dictionary = d.__deepcopy__
         # For each possible word
         for possible in d.solutions(ciphered):
             # Leave each possible word as a unique solution
             trimmed_dictionary.remove_key(ciphered)
             trimmed_dictionary.push_entry(ciphered, [possible])
-            temp_alphabet = explore_uniques(trimmed_dictionary, max_alphabet.copy(), [ciphered], 0)
+            temp_alphabet = explore_uniques(trimmed_dictionary, max_alphabet.__deepcopy__(), [ciphered], 0)
             n += 1
             if divmod(n, 10) == 0:
                 print(pr.stats())
                 print(chr(27) + "[2J")
                 print('(', n, '/', l, ')')
             # Choose the deepest result from each branch of the tree
-            if temp_alphabet.get_number_of_words() > max_alphabet.get_number_of_words():
-                max_alphabet = temp_alphabet
+            # if temp_alphabet.get_number_of_words() > max_alphabet.get_number_of_words():
+            #     max_alphabet = temp_alphabet
     return max_alphabet
 
 
@@ -120,18 +120,18 @@ def handle_halt(**kwargs):
 
 
 def handle_subprocess(*args, **kwargs):
-    p1 = Process(target=handle_crack, args=args, kwargs=kwargs)
-    p1.start()
-    p2 = Process(target=handle_halt, kwargs=kwargs)
-    p2.start()
+    input_process = Process(target=handle_crack, args=args, kwargs=kwargs)
+    input_process.start()
+    crack_process = Process(target=handle_halt, kwargs=kwargs)
+    crack_process.start()
 
     while 1:
-        if p1.is_alive():
-            if not p2.is_alive():
-                p1.terminate()
+        if input_process.is_alive():
+            if not crack_process.is_alive():
+                input_process.terminate()
                 break
         else:
-            p2.terminate()
+            crack_process.terminate()
             break
 
 pr = Progress()

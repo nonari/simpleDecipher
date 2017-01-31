@@ -11,7 +11,7 @@ class Dictionary:
     def __init__(self, d: dict):
         self._d = d
 
-    def copy(self):
+    def __deepcopy__(self):
         new_dictionary = Dictionary({})
         new_dictionary._d = copy.deepcopy(self._d)
         return new_dictionary
@@ -38,7 +38,7 @@ class Dictionary:
                 # Remove it from the dict
                 self._d.pop(ciphered)
         t = time.time() - t1
-        # print('Filtered in ' + t.__str__() + ' ms')
+        print('Filtered in ' + t.__str__() + ' ms')
 
     # Method: Returns the single solution words
     def uniques(self) -> List[str]:

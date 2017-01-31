@@ -15,7 +15,7 @@ class Text:
 
     # Static method: Converts ASCII bytes to string
     @staticmethod
-    def _ascii_bytes_to_str(ascii_text: str) -> str:
+    def _ascii_bytes_to_str(ascii_text: bytes) -> str:
         string = ''
         for i in ascii_text:
             string += chr(i)
@@ -38,11 +38,11 @@ class Text:
     # Method: Convert non [a-z] symbols
     def normalize_text(self) -> None:
         # Normalize non ASCII characters, returns bytes
-        self._text = unicodedata.normalize('NFKD', self._text).encode('ascii', 'ignore')
+        normalized_text = unicodedata.normalize('NFKD', self._text).encode('ascii', 'ignore')
         # Lower case text
         # self._text = self._text.lower()
         # Convert bytes from the normalizer to string
-        self._text = self._ascii_bytes_to_str(self._text)
+        self._text = self._ascii_bytes_to_str(normalized_text)
         # Erase grouped spaces
         self._text = self._remove_grouped_spaces(self._text)
 
@@ -131,7 +131,7 @@ class Text:
 
     # Method: Extract possible words
     def extract_words(self) -> List[str]:
-        if self._space_symbol != None:
+        if self._space_symbol is not None:
             words = []
             for word in self._text.split(self._space_symbol):
                 if len(word) > 5:

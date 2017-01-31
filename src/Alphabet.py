@@ -28,15 +28,15 @@ class Alphabet:
 
     # Method: Returns a self copy
     # Output: Alphabet
-    def copy(self):
-        a_clone = Alphabet()
-        a_clone._number_of_words = self._number_of_words
-        a_clone._solving_index = self._solving_index.copy()
-        a_clone._ciphering_index = self._ciphering_index.copy()
-        a_clone._solved_letters = self._solved_letters.copy()
-        a_clone._reverse_solved_letters = self._reverse_solved_letters.copy()
-        a_clone._number_of_placed_letters = self._number_of_placed_letters
-        return a_clone
+    def __deepcopy__(self):
+        clone = Alphabet()
+        clone._number_of_words = self._number_of_words
+        clone._solving_index = self._solving_index.copy()
+        clone._ciphering_index = self._ciphering_index.copy()
+        clone._solved_letters = self._solved_letters.copy()
+        clone._reverse_solved_letters = self._reverse_solved_letters.copy()
+        clone._number_of_placed_letters = self._number_of_placed_letters
+        return clone
 
     # Method: Match c with s
     def match(self, ciphered: str, solved: str) -> None:
@@ -123,18 +123,11 @@ class Alphabet:
     def get_number_of_placed_letters(self) -> int:
         return self._number_of_placed_letters
 
-    # Method: Checks if this alphabet is a superset of a given one
-    def is_superset(self, a) -> bool:
-        for i in a.get_solved_letters():
-            if (a.decipher(i) != self.decipher(i)) and (i in self._solved_letters):
-                return False
-        return True
-
     def __str__(self):
         solving_str = 'Solving index: ' + self.get_solving_index().__str__()
         ciphering_str = 'Ciphering index: ' + self.get_ciphering_index().__str__()
         solved_letters_str = '         Solved letters: ' + self.get_solved_letters().__str__()
         reverse_solved_letters_str = "         Reverse solved: " + self.get_reverse_solved_letters().__str__()
         result_str = 'Alphabet {' + solving_str + '\n        ' + ciphering_str + '\n' \
-                     + solved_letters_str + '\n' +  reverse_solved_letters_str
+                     + solved_letters_str + '\n' + reverse_solved_letters_str
         return result_str
