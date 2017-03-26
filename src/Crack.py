@@ -13,8 +13,8 @@ def stats(text: Text, dictionary: Dictionary):
     text_letters_count = text.letter_stats()[:2]
     combined_letters = []
     for combination in usual_letters:
-        for a in text_letters_count:
-            for b in text_letters_count:
+        for a in list(text_letters_count):
+            for b in list(text_letters_count):
                 if b != a:
                     combined_letters.insert(0, ((a[0], combination[0]), (b[0], combination[1])))
     print(combined_letters)
@@ -24,11 +24,11 @@ def stats(text: Text, dictionary: Dictionary):
         alphabet = Alphabet()
         alphabet.match(combination[0][0], combination[0][1])
         alphabet.match(combination[1][0], combination[1][1])
-        dictionary_copy = dictionary.__deepcopy__
+        dictionary_copy = dictionary.__deepcopy__()
         dictionary_copy.filter(alphabet)
-        solutions += explore_uniques(dictionary_copy, alphabet, [], 0)
+        solutions += explore_uniques(dictionary, alphabet, [], 0)
         n += 1
-        if divmod(n, 10) == 0:
+        if 0 == divmod(n, 10):
             print(pr.stats())
             print(chr(27) + "[2J")  # Para que servia esta brujeria?
             print('(', n, '/', len(combined_letters), ')')
@@ -70,7 +70,7 @@ def explore_uniques(dictionary: Dictionary, alphabet: Alphabet, uniques: list, n
         # Swap the nth word to the first position
         nth_word = uniques.pop(i)
         uniques.insert(0, nth_word)
-        solutions += explore_uniques(dictionary.__deepcopy__, alphabet.__deepcopy__(), uniques.copy(), n)
+        solutions += explore_uniques(dictionary.__deepcopy__(), alphabet.__deepcopy__(), uniques.copy(), n)
         # Choose the deepest result from each branch of the tree
         # if temp_alphabet.get_number_of_placed_letters() > max_alphabet.get_number_of_placed_letters():
         #     max_alphabet = temp_alphabet
@@ -88,7 +88,7 @@ def brute_exploration(d: Dictionary):
     for ciphered in ciphered_possibles:
         if len(d.solutions(ciphered)) > 200:
             continue
-        trimmed_dictionary = d.__deepcopy__
+        trimmed_dictionary = d.__deepcopy__()
         # For each possible word
         for possible in d.solutions(ciphered):
             # Leave each possible word as a unique solution
@@ -96,7 +96,7 @@ def brute_exploration(d: Dictionary):
             trimmed_dictionary.push_entry(ciphered, [possible])
             temp_alphabet = explore_uniques(trimmed_dictionary, max_alphabet.__deepcopy__(), [ciphered], 0)
             n += 1
-            if divmod(n, 10) == 0:
+            if 0 == divmod(n, 10):
                 print(pr.stats())
                 print(chr(27) + "[2J")
                 print('(', n, '/', l, ')')

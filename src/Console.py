@@ -29,7 +29,7 @@ def create_dict():
 
         if response == 'y':
             w = t.extract_words()
-            di = Dictionary(p.get_matching_words_dic(w))
+            di = Dictionary(p.matching_words_dic(w))
             print('Dict created')
             break
         else:

@@ -105,16 +105,16 @@ class PatternsTest(unittest.TestCase):
 
     def test_matching_words(self):
         word = 'aldaba'
-        matching_words = self.patterns.get_matching_words(word)
+        matching_words = self.patterns.matching_words(word)
         self.assertIn(word, matching_words)
 
         word_2 = 'macarron'
-        matching_words_2 = self.patterns.get_matching_words(word_2)
+        matching_words_2 = self.patterns.matching_words(word_2)
         self.assertIn(word_2, matching_words_2)
 
     def test_matching_words_dic(self):
         words = ['aldaba', 'macarron']
-        matching_words = self.patterns.get_matching_words_dic(words)
+        matching_words = self.patterns.matching_words_dic(words)
         self.assertIn(words[0], matching_words[words[0]])
         self.assertIn(words[1], matching_words[words[1]])
 
@@ -180,7 +180,7 @@ class IntegrationTest(unittest.TestCase):
         ciphered_text = 'eyvuxybsiaybuxiebuiaaivewciklelb'  # rubicundosunicornios
         text = Text(ciphered_text)
         possible_words = text.extract_words()
-        solving_dict = patterns.get_matching_words_dic(possible_words)
+        solving_dict = patterns.matching_words_dic(possible_words)
         dictionary = Dictionary(solving_dict)
         alphabet = Alphabet()
         alphabet.match('ey', 'ru')
@@ -199,7 +199,7 @@ class CrackTextWithUniqueWordsTest(unittest.TestCase):
         ciphered_text = 'eyvuxybsiaybuxiebuiaciklelbkklnwlbrwa'
         text = Text(ciphered_text)
         possible_words = text.extract_words()
-        solving_dict = patterns.get_matching_words_dic(possible_words)
+        solving_dict = patterns.matching_words_dic(possible_words)
         self.dictionary = Dictionary(solving_dict)
         self.alphabet = Alphabet()
 
@@ -224,7 +224,7 @@ class CrackTextWithoutUniqueWords(unittest.TestCase):
         ciphered_text = 'deibrwelswkiavwaiaawelbnlblblxylbsiwbklswbrlsyelauwbrlayblenl'
         self.text = Text(ciphered_text)
         possible_words = self.text.extract_words()
-        solving_dict = patterns.get_matching_words_dic(possible_words)
+        solving_dict = patterns.matching_words_dic(possible_words)
         self.dictionary = Dictionary(solving_dict)
         self.alphabet = Alphabet()
         self.alphabet.match('qwertyuiopasdfghjklzxcvbnm', 'wertyuiopqsdfghjklaxcvbnmz')
