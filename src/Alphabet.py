@@ -9,17 +9,12 @@ class Alphabet:
     # Constructor
     # Initializes index lists
     def __init__(self):
-        # Number of words matched
+        self._solved_words = []
         self._number_of_words = 0
-        # Number of placed letters
         self._number_of_placed_letters = 0
-        # Set of solved letters (ciphered)
         self._solved_letters = set()
-        # Set of reverse solved letters (deciphered)
         self._reverse_solved_letters = set()
-        # This index matches: Ciphered -> Solved
         self._solving_index = []
-        # Solved -> Ciphered
         self._ciphering_index = []
         # Initializes each array with 25 numbers each representing an ASCII letter (a-z)
         for i in range(0, 26):
@@ -36,16 +31,16 @@ class Alphabet:
         clone._solved_letters = self._solved_letters.copy()
         clone._reverse_solved_letters = self._reverse_solved_letters.copy()
         clone._number_of_placed_letters = self._number_of_placed_letters
+        clone._solved_words = self._solved_words.copy()
         return clone
 
     # Method: Match c with s
     def match(self, ciphered: str, solved: str) -> None:
-        # Check if parameters lengths match
         if len(ciphered) != len(solved):
             raise ValueError('Parameters lengths differ')
-        # Update matched words counter
+        self._solved_words.append(solved)
         self._number_of_words += 1
-        # For each char in the parameters update the indexes
+
         for i in range(len(ciphered)):
             self._number_of_placed_letters += 1
             self._solved_letters.add(ciphered[i])
@@ -53,9 +48,7 @@ class Alphabet:
             # Convert chars to ASCII code
             c_code = ord(ciphered[i]) - 97
             s_code = ord(solved[i]) - 97
-            # Solved letter for c
             self._solving_index[c_code] = solved[i]
-            # Ciphered letter for s
             self._ciphering_index[s_code] = ciphered[i]
 
     def match_list(self, ciphered_words: List[str], solved_words: List[str]) -> None:
@@ -64,18 +57,15 @@ class Alphabet:
 
     # Method: Checks if, for the already solved letters, ciphered word c matches with exp
     def fits(self, ciphered: str, expected: str) -> bool:
-        result = True
         deciphered = self.decipher(ciphered)
         for i in range(len(ciphered)):
             if ciphered[i] in self._solved_letters:
                 if deciphered[i] != expected[i]:
-                    result = False
-                    break
+                    return False
             else:
                 if expected[i] in self._reverse_solved_letters:
-                    result = False
-                    break
-        return result
+                    return False
+        return True
 
     # Method: Check if the current solution contains all of a ciphered word letters
     def contains(self, word: str) -> bool:
@@ -122,6 +112,9 @@ class Alphabet:
 
     def get_number_of_placed_letters(self) -> int:
         return self._number_of_placed_letters
+
+    def get_solved_words(self) -> List[str]:
+        return self._solved_words
 
     def __str__(self):
         solving_str = 'Solving index: ' + self.get_solving_index().__str__()

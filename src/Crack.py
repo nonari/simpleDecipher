@@ -38,8 +38,7 @@ def stats(text: Text, dictionary: Dictionary):
     return solutions
     
 
-def explore_uniques(dictionary: Dictionary, alphabet: Alphabet, uniques: list, n: int = 0) -> List[Alphabet]:
-    # If not root node OR uniques remaining, try the solution
+def explore_uniques(dictionary: Dictionary, alphabet: Alphabet, uniques: List[str], n: int = 0) -> List[Alphabet]:
     print('')
     if n > 0:
         print('Uniques for filter: ' + uniques.__str__())
@@ -80,7 +79,6 @@ def explore_uniques(dictionary: Dictionary, alphabet: Alphabet, uniques: list, n
 
 
 def brute_exploration(d: Dictionary):
-    # Notice that the .keys method returns a dict_keys object still pointing to the dict
     max_alphabet = Alphabet()
     n = 0
     l = d.__sizeof__()
@@ -89,7 +87,6 @@ def brute_exploration(d: Dictionary):
         if len(d.solutions(ciphered)) > 200:
             continue
         trimmed_dictionary = d.__deepcopy__()
-        # For each possible word
         for possible in d.solutions(ciphered):
             # Leave each possible word as a unique solution
             trimmed_dictionary.remove_key(ciphered)
@@ -113,7 +110,6 @@ def handle_crack(*args, **kwargs):
 def handle_halt(**kwargs):
     fout = os.fdopen(kwargs['fout'], mode='w')
     fin = os.fdopen(kwargs['fin'], mode='r')
-    # Ask for pressing ENTER to quit current crack process
     print('Press ENTER to halt cracking process', file=fout, flush=True)
     fin.read(1)
     print('Process halted', file=fout, flush=True)

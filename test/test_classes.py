@@ -7,7 +7,6 @@ from src.Patterns import Patterns
 from src.Text import Text
 from src.Dictionary import Dictionary
 import Crack
-# import cProfile
 
 
 class AlphabetTest(unittest.TestCase):
@@ -33,25 +32,6 @@ class AlphabetTest(unittest.TestCase):
     def test_contains(self):
         self.alphabet.match("bdbxihbkkwlb", "abacogalleta")
         self.assertTrue(self.alphabet.contains("xihikki"))
-
-    def test_new(self):
-        self.alphabet.match("t", "a")
-        print(self.alphabet.get_solving_index())
-
-    # def cont(self):
-    #     for i in range(10000000):
-    #         self.a.contains("xihikki")
-
-    # def test_speed(self):
-    #     c = 'abnxhdyemricousd'
-    #     s = 'ajduethrncmxlapq'
-    #     b = 'yemricoqhdsl'
-    #     self.a.match(c, s)
-    #     pr = cProfile.Profile()
-    #     pr.enable()
-    #     pr.runcall(self.cont)
-    #     pr.disable()
-    #     pr.print_stats()
 
     def test_decipher(self):
         ciphered = 'vwjw'
@@ -210,7 +190,8 @@ class CrackTextWithUniqueWordsTest(unittest.TestCase):
         # self.assertEquals(solved_text, expected_solved_text)
         print(solutions)
         for e in solutions:
-            print(e.decipher('eyvuxybsiaybuxiebuiaciklelbkklnwlbrwa'))
+            print(e.decipher('eyvuxybsiaybuxiebuiaciklelbkklnwlbrwa')
+                  + " " + e.get_number_of_placed_letters().__str__() + " " + e.get_number_of_words().__str__()+ " " + e.get_solved_words().__str__())
 
     def test_stats(self):
         pass
