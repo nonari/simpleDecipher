@@ -1,5 +1,6 @@
 import unicodedata
-from typing import List, Tuple
+from typing import List, Tuple, Set
+
 # Class for handling ciphered text processing
 
 
@@ -7,13 +8,11 @@ class Text:
 
     def __init__(self, text: str):
         self._text = text
-        # Defaults the space symbol to None
         self._space_symbol = None
 
     def set_space(self, symbol: str) -> None:
         self._space_symbol = symbol
 
-    # Static method: Converts ASCII bytes to string
     @staticmethod
     def _ascii_bytes_to_str(ascii_text: bytes) -> str:
         string = ''
@@ -35,23 +34,20 @@ class Text:
                 filtered_text += char
         return filtered_text
 
-    # Method: Convert non [a-z] symbols
+    # Convert non [a-z] symbols
     def normalize_text(self) -> None:
         # Normalize non ASCII characters, returns bytes
         normalized_text = unicodedata.normalize('NFKD', self._text).encode('ascii', 'ignore')
         # Lower case text
         # self._text = self._text.lower()
-        # Convert bytes from the normalizer to string
         self._text = self._ascii_bytes_to_str(normalized_text)
-        # Erase grouped spaces
         self._text = self._remove_grouped_spaces(self._text)
 
-    # Method: Convert non [a-z] symbols in key
+    # Convert non [a-z] symbols in key
     def normalize_key(self) -> None:
         keys = set()
-        # Add all symbols to keys set
         for char in self._text:
-            if char != ' ':
+            if char != self._space_symbol:
                 keys.add(char)
         # If key is non [a-z] replace it by a symbol not already in keys
         # Sort keys for a deterministic behaviour when replacing the non [a-z] key
@@ -70,25 +66,23 @@ class Text:
                         self._text = self._text.replace(key, char)
                         break
 
-    # Method: Remove . , :
+    # Remove . , : ;
     def remove_stops(self) -> None:
         self._text = self._text.replace(',', ' ')
         self._text = self._text.replace('.', ' ')
         self._text = self._text.replace(':', ' ')
         self._text = self._text.replace(';', ' ')
-        # Erase grouped spaces
         self._text = self._remove_grouped_spaces(self._text)
 
-    # Method: Check there are no more than 26 symbols
-    # Output: Set
-    def check_symbols(self) -> set:
+    # Returns the set of text symbols
+    def check_symbols(self) -> Set[str]:
         symbols = set()
         for char in self._text:
             symbols.add(char)
         return symbols
 
-    # Method: Reduces key length to one
-    def reduce_key(self) -> str:
+    # Reduces key length to one
+    def reduce_key(self) -> bool:
         reduced_text = ''
         key = {}
         key_len = 0
@@ -104,13 +98,14 @@ class Text:
                 pos += key_len
                 # If there are more than 27 symbols in key check next length
                 if key.__len__() > 27:
+                    # TODO spurious solutions?
                     break
             # If there are less than 27 symbols, key is found
             if key.__len__() < 27:
                 break
         # If loops finish with a bad key, return void string
         if key_len > 27:
-            return ''
+            return False
         # If key is found, reduce text
         else:
             pos = 0
@@ -119,9 +114,9 @@ class Text:
                 reduced_text += key[self._text[pos:pos + key_len]]
                 pos += key_len
             self._text = reduced_text
-            return reduced_text
+            return True
 
-    # Method: Replace each occurrence of the space symbol by an actual space
+    # Replace each occurrence of the space symbol by an actual space
     def space_text(self) -> None:
         text = ''
         for char in self._text:
@@ -129,7 +124,7 @@ class Text:
                 text += ' '
         self._text = text
 
-    # Method: Extract possible words
+    # Extract possible words
     def extract_words(self) -> List[str]:
         if self._space_symbol is not None:
             words = []
@@ -148,13 +143,12 @@ class Text:
                     offset += 1
         return words
 
-    # Method: Return list of words split by space symbol
+    # Return list of words split by space symbol
     def split_text(self) -> List[str]:
         words = self._text.split(self._space_symbol)
         return words
 
-    # Method: Returns the text letters ordered by the most common ones
-    # Output: List of chars
+    # Returns the text letters ordered by the most common ones
     def letter_stats(self) -> List[Tuple[str, int]]:
         s = list(self.check_symbols())
         s.sort()
@@ -169,7 +163,7 @@ class Text:
         l.sort(key=lambda t: t[1], reverse=True)
         return l
 
-    # Method: Replace spaces by a ciphered character
+    # Replace spaces by a ciphered character
     def cipher_spaces(self) -> None:
         s = set()
         for letter in self._text:
@@ -195,7 +189,5 @@ class Text:
             fin = int(kwargs['fin'])
         self._text = self._text[ini:fin]
 
-    # Method: Return text
-    # Output: String
     def get_text(self):
         return self._text

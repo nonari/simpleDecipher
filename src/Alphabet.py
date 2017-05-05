@@ -1,4 +1,5 @@
 from typing import List, Set
+import random
 
 # Class for handling solution alphabet
 # Can only handle an [a-z] ASCII alphabet
@@ -6,8 +7,6 @@ from typing import List, Set
 
 class Alphabet:
 
-    # Constructor
-    # Initializes index lists
     def __init__(self):
         self._solved_words = []
         self._number_of_words = 0
@@ -16,13 +15,11 @@ class Alphabet:
         self._reverse_solved_letters = set()
         self._solving_index = []
         self._ciphering_index = []
-        # Initializes each array with 25 numbers each representing an ASCII letter (a-z)
+
         for i in range(0, 26):
             self._solving_index.append('?')
             self._ciphering_index.append('?')
 
-    # Method: Returns a self copy
-    # Output: Alphabet
     def __deepcopy__(self):
         clone = Alphabet()
         clone._number_of_words = self._number_of_words
@@ -34,7 +31,7 @@ class Alphabet:
         clone._solved_words = self._solved_words.copy()
         return clone
 
-    # Method: Match c with s
+    # Matches ciphered letter with solved
     def match(self, ciphered: str, solved: str) -> None:
         if len(ciphered) != len(solved):
             raise ValueError('Parameters lengths differ')
@@ -55,7 +52,7 @@ class Alphabet:
         for ciphered_word, solved_word in ciphered_words, solved_words:
             self.match(ciphered_word, solved_word)
 
-    # Method: Checks if, for the already solved letters, ciphered word c matches with exp
+    # Checks if, for the already solved letters, ciphered word c matches with exp
     def fits(self, ciphered: str, expected: str) -> bool:
         deciphered = self.decipher(ciphered)
         for i in range(len(ciphered)):
@@ -67,7 +64,7 @@ class Alphabet:
                     return False
         return True
 
-    # Method: Check if the current solution contains all of a ciphered word letters
+    # Check if the current solution contains all of a ciphered word letters
     def contains(self, word: str) -> bool:
         for c in word:
             if c not in self._solved_letters:
@@ -77,36 +74,62 @@ class Alphabet:
     # Method: Deciphers word with the current index state
     def decipher(self, word: str) -> str:
         deciphered_word = ''
-        # Matches each char from the input String with a char at the solving_index
-        for i in word:
-            deciphered_word += self._solving_index[ord(i) - 97]
+        for letter in word:
+            deciphered_word += self._solving_index[ord(letter) - 97]
         return deciphered_word
 
     # Method: Ciphers word with the current index state
     def cipher(self, word: str) -> str:
         ciphered_word = ''
-        # Matches each char from the input String with a char at the ciphering_index
-        for i in word:
-            ciphered_word += self._ciphering_index[ord(i) - 97]
+        for letter in word:
+            ciphered_word += self._ciphering_index[ord(letter) - 97]
         return ciphered_word
 
-    # Method: Returns solving index
+    @staticmethod
+    def generate_abc_set() -> Set[str]:
+        abc = set()
+        for i in range(0, 26):
+            abc.add(chr(i + 97))
+        return abc
+
+    @staticmethod
+    def generate_random_alphabet() -> 'Alphabet':
+        alphabet = Alphabet()
+        ciphering_abc = list(Alphabet.generate_abc_set())
+        solving_abc = list(Alphabet.generate_abc_set())
+
+        lasting_letters = 26
+        for n in range(random.randint(1, 26)):
+            ciphered_letter_idx = random.randint(0, lasting_letters)
+            solved_letter_idx = random.randint(0, lasting_letters)
+
+            ciphered_letter = ciphering_abc.pop(ciphered_letter_idx)
+            solved_letter = solving_abc.pop(solved_letter_idx)
+
+            alphabet.match(ciphered_letter, solved_letter)
+
+            lasting_letters -= 1
+        return alphabet
+
+    @staticmethod
+    def generate_random_alphabets(n) -> List['Alphabet']:
+        alphabet_list = []
+        for i in range(n):
+            alphabet_list.append(Alphabet.generate_random_alphabet())
+        return alphabet_list
+
     def get_solving_index(self) -> List[str]:
         return self._solving_index
 
-    # Method: Returns ciphering index
     def get_ciphering_index(self) -> List[str]:
         return self._ciphering_index
 
-    # Method: Returns already solved chars
     def get_solved_letters(self) -> Set[str]:
         return self._solved_letters
 
-    # Method: Returns already solved chars
     def get_reverse_solved_letters(self) -> Set[str]:
         return self._reverse_solved_letters
 
-    # Method: Returns the number of matched words
     def get_number_of_words(self) -> int:
         return self._number_of_words
 

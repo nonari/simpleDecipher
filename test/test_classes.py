@@ -80,7 +80,7 @@ class PatternsTest(unittest.TestCase):
     def test_build_pattern(self):
         word = 'aldaba'
         exp_pattern = '0.1.2.0.3.0'
-        pattern = self.patterns.pattern(word)
+        pattern = self.patterns.pattern_of(word)
         self.assertEqual(exp_pattern, pattern)
 
     def test_matching_words(self):
@@ -151,6 +151,15 @@ class TextTest(unittest.TestCase):
         pass
         # ciphered_text = open('texts/reto_07.txt', encoding='iso-8859-1').read()
         # self.t = Text(ciphered_text)
+
+
+class Comparator(unittest.TestCase):
+
+    def setUp(self):
+        self.alphabet1 = Alphabet()
+
+    def compare(self):
+        pass
 
 
 class IntegrationTest(unittest.TestCase):

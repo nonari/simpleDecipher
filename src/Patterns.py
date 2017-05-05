@@ -6,24 +6,19 @@ from typing import Dict, List
 
 class Patterns:
 
-    def __init__(self, dic_name: str):
-        # Compose dictionary path
-        dic_dir = 'lib.' + dic_name
-        # Imports the patterns set
-        self._patterns = importlib.import_module(dic_dir).allPatterns
+    def __init__(self, dict_name: str):
+        dict_dir = 'lib.' + dict_name
+        self._patterns = importlib.import_module(dict_dir).allPatterns
 
-    # Method: Returns a list of matching words for a given word
+    # Returns a list of matching words for a given word
     def matching_words(self, word: str) -> List[str]:
-        # Obtain the word pattern
-        pattern = self.pattern(word)
-        # Search at the pattern dictionary for the pattern
+        pattern = self.pattern_of(word)
         if pattern in self._patterns:
-            # Return list of matching words if found
             return list(self._patterns[pattern])
         else:
             return []
 
-    # Method: Returns a list of matching words for each given word
+    # Returns a dict of matching words for each given word
     def matching_words_dic(self, words: List[str]) -> Dict[str, str]:
         matching_words_dic = {}
         for word in words:
@@ -32,9 +27,8 @@ class Patterns:
                 matching_words_dic[word] = matching_list
         return matching_words_dic
 
-    # Method: Builds word pattern
     @staticmethod
-    def pattern(word: str) -> str:
+    def pattern_of(word: str) -> str:
         next_num = 0
         letter_set = {}
         word_pattern = []
