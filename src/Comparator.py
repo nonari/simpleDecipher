@@ -1,7 +1,7 @@
-from typing import List
+from typing import List, Dict, Tuple
 
 # Class for comparing two lists of solution Alphabets
-import Alphabet
+from src.Alphabet import Alphabet
 
 
 class Comparator:
@@ -16,24 +16,24 @@ class Comparator:
         self.populate_left()
         self.compare()
 
-    def init_index(self):
-        for i in range(27):
-            for j in range(27):
+    def init_index(self) -> None:
+        for i in range(97, 123):
+            for j in range(97, 123):
                 ciphered = chr(i)
                 solved = chr(j)
                 self._right_index[(ciphered, solved)] = []
 
-    def populate_index(self):
-        for alphabet in self._solutions2:
+    def populate_index(self) -> None:
+        for alphabet in self._solutions1:
             for ciphered in alphabet.get_solved_letters():
                 solved = alphabet.decipher(ciphered)
                 self._right_index[(ciphered, solved)].append(alphabet)
 
     def populate_left(self):
         for alphabet in self._solutions2:
-            self._left_list.append((alphabet,{}))
+            self._left_list.append((alphabet, {}))
 
-    def compare(self):
+    def compare(self) -> None:
         for (l_alphabet, matching_index) in self._left_list:
             for ciphered in l_alphabet.get_solved_letters():
                 deciphered = l_alphabet.decipher(ciphered)
@@ -44,5 +44,5 @@ class Comparator:
                     else:
                         matching_index[r_alphabet] = 1
 
-    def get_solution_pairs(self):
-        pass
+    def get_solution_pairs(self) -> List[Tuple[Alphabet, Dict[Alphabet, int]]]:
+        return self._left_list

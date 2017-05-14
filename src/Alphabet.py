@@ -42,7 +42,7 @@ class Alphabet:
             self._number_of_placed_letters += 1
             self._solved_letters.add(ciphered[i])
             self._reverse_solved_letters.add(solved[i])
-            # Convert chars to ASCII code
+
             c_code = ord(ciphered[i]) - 97
             s_code = ord(solved[i]) - 97
             self._solving_index[c_code] = solved[i]
@@ -66,19 +66,19 @@ class Alphabet:
 
     # Check if the current solution contains all of a ciphered word letters
     def contains(self, word: str) -> bool:
-        for c in word:
-            if c not in self._solved_letters:
+        for letter in word:
+            if letter not in self._solved_letters:
                 return False
         return True
 
-    # Method: Deciphers word with the current index state
+    # Deciphers word with the current index state
     def decipher(self, word: str) -> str:
         deciphered_word = ''
         for letter in word:
             deciphered_word += self._solving_index[ord(letter) - 97]
         return deciphered_word
 
-    # Method: Ciphers word with the current index state
+    # Ciphers word with the current index state
     def cipher(self, word: str) -> str:
         ciphered_word = ''
         for letter in word:
@@ -86,19 +86,18 @@ class Alphabet:
         return ciphered_word
 
     @staticmethod
-    def generate_abc_set() -> Set[str]:
-        abc = set()
-        for i in range(0, 26):
-            abc.add(chr(i + 97))
-        return abc
+    def generate_abc_list() -> List[str]:
+        abc = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+               'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+        return abc.copy()
 
     @staticmethod
-    def generate_random_alphabet() -> 'Alphabet':
+    def generate_random_solution() -> 'Alphabet':
         alphabet = Alphabet()
-        ciphering_abc = list(Alphabet.generate_abc_set())
-        solving_abc = list(Alphabet.generate_abc_set())
+        ciphering_abc = Alphabet.generate_abc_list()
+        solving_abc = Alphabet.generate_abc_list()
 
-        lasting_letters = 26
+        lasting_letters = 25
         for n in range(random.randint(1, 26)):
             ciphered_letter_idx = random.randint(0, lasting_letters)
             solved_letter_idx = random.randint(0, lasting_letters)
@@ -112,10 +111,10 @@ class Alphabet:
         return alphabet
 
     @staticmethod
-    def generate_random_alphabets(n) -> List['Alphabet']:
+    def generate_random_solutions(n) -> List['Alphabet']:
         alphabet_list = []
         for i in range(n):
-            alphabet_list.append(Alphabet.generate_random_alphabet())
+            alphabet_list.append(Alphabet.generate_random_solution())
         return alphabet_list
 
     def get_solving_index(self) -> List[str]:
@@ -142,8 +141,8 @@ class Alphabet:
     def __str__(self):
         solving_str = 'Solving index: ' + self.get_solving_index().__str__()
         ciphering_str = 'Ciphering index: ' + self.get_ciphering_index().__str__()
-        solved_letters_str = '         Solved letters: ' + self.get_solved_letters().__str__()
-        reverse_solved_letters_str = "         Reverse solved: " + self.get_reverse_solved_letters().__str__()
-        result_str = 'Alphabet {' + solving_str + '\n        ' + ciphering_str + '\n' \
+        solved_letters_str = 'Solved letters: ' + self.get_solved_letters().__str__()
+        reverse_solved_letters_str = "Reverse solved: " + self.get_reverse_solved_letters().__str__()
+        result_str = 'Alphabet: {' + solving_str + '\n' + ciphering_str + '\n' \
                      + solved_letters_str + '\n' + reverse_solved_letters_str
         return result_str
