@@ -189,5 +189,5 @@ class Text:
             fin = int(kwargs['fin'])
         self._text = self._text[ini:fin]
 
-    def get_text(self):
+    def get_text(self) -> str:
         return self._text

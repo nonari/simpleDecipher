@@ -156,14 +156,28 @@ class TextTest(unittest.TestCase):
 
 class ComparatorTest(unittest.TestCase):
 
-    def setUp(self):
-        # Max 15000
-        self.solutions1 = Alphabet.generate_random_solutions(150)
-        self.solutions2 = Alphabet.generate_random_solutions(150)
+    @staticmethod
+    def test_count_correct():
+        solution1 = Alphabet()
+        solution2 = Alphabet()
+        solution3 = Alphabet()
+        solution1.match("abcdef", "fedcba")
+        solution2.match("abcdef", "fexcba")
+        solution3.match("abcdef", "fedcnm")
+        exp_matching_dict = {solution2: 5, solution3: 4}
+        c = Comparator([solution2, solution3], [solution1])
+        for solution1, index in c.get_solution_pairs():
+            for solution2 in index:
+                assert exp_matching_dict[solution2] == index[solution2]
 
-    def test_match_count(self):
+    @staticmethod
+    def test_match_count():
+        # Max 15000
+        solutions1 = Alphabet.generate_random_solutions(150)
+        solutions2 = Alphabet.generate_random_solutions(150)
+
         result = True
-        comparator = Comparator(self.solutions1, self.solutions2)
+        comparator = Comparator(solutions1, solutions2)
         for solution1, index in comparator.get_solution_pairs():
             for solution2 in index:
                 count = 0
@@ -176,7 +190,6 @@ class ComparatorTest(unittest.TestCase):
                     break
             if not result:
                 break
-
         assert result
 
 
@@ -239,11 +252,22 @@ class CrackTextWithUniqueWordsTest(unittest.TestCase):
             print(e.decipher('eyvuxybsiaybuxiebuiaciklelbkklnwlbrwa')
                   + " " + e.get_number_of_placed_letters().__str__() + " " + e.get_number_of_words().__str__() + " " +
                   e.get_solved_words().__str__())
+
         c = Comparator(solutions, solutions2)
+        max = 0
+        it2 = None
+        it1 = None
         for solution1, index in c.get_solution_pairs():
-            print(solution1.get_solving_index())
+            # print(solution1.get_solving_index())
             for solution2 in index:
-                print(solution2.get_solving_index(), index[solution2])
+                if max < index[solution2]:
+                    max = index[solution2]
+                    it1 = solution2
+                    it2 = solution1
+                # print(solution2.get_solving_index(), index[solution2])
+        print(max)
+        print(it2.decipher('eyvuxybsiaybuxiebuiaciklelbkklnwlbrwa'))
+        print(it1.decipher('cywkivklbxiswzlcuirleizlrieui'))
 
     def test_uniques(self):
         solutions = Crack.explore_uniques(self.dictionary1, self.alphabet1, [])
