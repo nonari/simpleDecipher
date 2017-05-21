@@ -30,7 +30,7 @@ class Dictionary:
             if len(self._d[ciphered]) == 0:
                 self._d.pop(ciphered)
         t = time.time() - t1
-        print('Filtered in ' + t.__str__() + ' ms')
+        # print('Filtered in ' + t.__str__() + ' ms')
 
     # Returns the single solution words
     def uniques(self) -> List[str]:

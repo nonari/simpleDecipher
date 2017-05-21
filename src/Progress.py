@@ -49,7 +49,7 @@ class Progress:
         self._node_counter += 1
         if self._max_depth < self._current_depth:
             self._max_depth = self._current_depth
-        self._avg_depth = (self._current_depth + (self._avg_depth * self._leaf_nodes))\
+        self._avg_depth = (self._current_depth + (self._avg_depth * float(self._leaf_nodes)))\
             / (self._leaf_nodes + 1)
         self._leaf_nodes += 1
 

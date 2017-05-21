@@ -7,7 +7,7 @@ from multiprocessing import Process
 import os
 
 
-def stats(text: Text, dictionary: Dictionary):
+def stats(text: Text, dictionary: Dictionary) -> List[Alphabet]:
     usual_letters = [('a', 'e'), ('a', 'o'), ('a', 's'), ('a', 'n'), ('e', 'o'), ('e', 's'),
                      ('e', 'n'), ('o', 's'), ('o', 'n'), ('s', 'n')]
     text_letters_count = text.letter_stats()[:2]
@@ -32,34 +32,32 @@ def stats(text: Text, dictionary: Dictionary):
             print(pr.stats())
             print(chr(27) + "[2J")  # Para que servia esta brujeria?
             print('(', n, '/', len(combined_letters), ')')
-        # Choose the deepest result from each branch of the tree
-        # if temp_alphabet.get_number_of_placed_letters() > max_alphabet.get_number_of_placed_letters():
-        #     max_alphabet = temp_alphabet
+
     return solutions
     
 
 def explore_uniques(dictionary: Dictionary, alphabet: Alphabet, uniques: List[str], n: int = 0) -> List[Alphabet]:
-    print('')
+    # print('')
     if n > 0:
-        print('Uniques for filter: ' + uniques.__str__())
+        # print('Uniques for filter: ' + uniques.__str__())
         first = uniques[0]
         solution = dictionary.solutions(first)[0]
         alphabet.match(first, solution)
-        print(alphabet.get_number_of_placed_letters())
-        print(alphabet.get_number_of_words())
+        # print(alphabet.get_number_of_placed_letters())
+        # print(alphabet.get_number_of_words())
         dictionary.filter(alphabet)
         uniques = dictionary.uniques()
 
-        print('Next uniques: ' + uniques.__str__())
-        if len(uniques) == 0:
-            pr.leaf((first, solution))
-        else:
-            pr.node((first, solution))
+        # print('Next uniques: ' + uniques.__str__())
+        # if len(uniques) == 0:
+        #     pr.leaf((first, solution))
+        # else:
+        #     pr.node((first, solution))
     else:
-        pr.root()
+        # pr.root()
         if len(uniques) == 0:
             uniques = dictionary.uniques()
-        print('Uniques: ' + uniques.__str__())
+        # print('Uniques: ' + uniques.__str__())
 
     # Explore the next nodes with the new uniques and return the max result
     max_alphabet = alphabet
@@ -70,16 +68,13 @@ def explore_uniques(dictionary: Dictionary, alphabet: Alphabet, uniques: List[st
         nth_word = uniques.pop(i)
         uniques.insert(0, nth_word)
         solutions += explore_uniques(dictionary.__deepcopy__(), alphabet.__deepcopy__(), uniques.copy(), n)
-        # Choose the deepest result from each branch of the tree
-        # if temp_alphabet.get_number_of_placed_letters() > max_alphabet.get_number_of_placed_letters():
-        #     max_alphabet = temp_alphabet
-        print(pr.node_up())
+        # print(pr.node_up())
 
     return solutions
 
 
-def brute_exploration(d: Dictionary):
-    max_alphabet = Alphabet()
+def brute_exploration(d: Dictionary) -> List[Alphabet]:
+    solutions = []
     n = 0
     l = d.__sizeof__()
     ciphered_possibles = list(d.keys())
@@ -91,7 +86,7 @@ def brute_exploration(d: Dictionary):
             # Leave each possible word as a unique solution
             trimmed_dictionary.remove_key(ciphered)
             trimmed_dictionary.push_entry(ciphered, [possible])
-            temp_alphabet = explore_uniques(trimmed_dictionary, max_alphabet.__deepcopy__(), [ciphered], 0)
+            solutions += explore_uniques(trimmed_dictionary, Alphabet(), [ciphered], 0)
             n += 1
             if 0 == divmod(n, 10):
                 print(pr.stats())
@@ -100,7 +95,7 @@ def brute_exploration(d: Dictionary):
             # Choose the deepest result from each branch of the tree
             # if temp_alphabet.get_number_of_words() > max_alphabet.get_number_of_words():
             #     max_alphabet = temp_alphabet
-    return max_alphabet
+    return solutions
 
 
 def handle_crack(*args, **kwargs):

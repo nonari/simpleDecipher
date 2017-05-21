@@ -1,7 +1,5 @@
 import unittest
 
-from builtins import print
-
 from src.Comparator import Comparator
 from src.Alphabet import Alphabet
 from src.Patterns import Patterns
@@ -197,7 +195,7 @@ class IntegrationTest(unittest.TestCase):
 
     def test_correct_deciphered_word(self):
         patterns = Patterns('spanishPatterns')
-        ciphered_text = 'eyvuxybsiaybuxiebuiaaivewciklelb'  # rubicundosunicornios
+        ciphered_text = 'eyvuxybsiaybuxiebuiaaivewciklelb'
         text = Text(ciphered_text)
         possible_words = text.extract_words()
         solving_dict = patterns.matching_words_dic(possible_words)
@@ -216,97 +214,62 @@ class CrackTextWithUniqueWordsTest(unittest.TestCase):
     def setUp(self):
         patterns1 = Patterns('spanishPatterns')
         # rubicundosunicorniosvolaranllameantes
-        ciphered_text1 = 'eyvuxybsiaybuxiebuiaciklelbkklnwlbrwa'
-        text1 = Text(ciphered_text1)
+        self.raw_text1 = 'eyvuxybsiaybuxiebuiaciklelbkklnwlbrwa'
+        text1 = Text(self.raw_text1)
         possible_words1 = text1.extract_words()
         solving_dict1 = patterns1.matching_words_dic(possible_words1)
         self.dictionary1 = Dictionary(solving_dict1)
         self.alphabet1 = Alphabet()
 
         patterns2 = Patterns('spanishPatterns')
-                        # vueloblancodegaviotarogatorio
-        ciphered_text2 = 'cywkivklbxiswzlcuirleizlrieui'
-        text2 = Text(ciphered_text2)
+        # vueloblancodegaviotarogatorio
+        self.raw_text2 = 'cywkivklbxiswzlcuirleizlrieui'
+        text2 = Text(self.raw_text2)
         possible_words2 = text2.extract_words()
         solving_dict2 = patterns2.matching_words_dic(possible_words2)
         self.dictionary2 = Dictionary(solving_dict2)
         self.alphabet2 = Alphabet()
 
     def test_divide_to_win(self):
-        solutions = Crack.explore_uniques(self.dictionary2, self.alphabet2, [])
-        # solved_text = solved_alphabet.decipher('eyvuxybsiaybuxiebuiaciklelbkklnwlbrwa')
-        # expected_solved_text = 'rubicundosunicornios?olaranllameantes'
-        # self.assertEquals(solved_text, expected_solved_text)
-        print(solutions)
-        for e in solutions:
-            print(e.decipher('cywkivklbxiswzlcuirleizlrieui')
-                  + " " + e.get_number_of_placed_letters().__str__() + " " + e.get_number_of_words().__str__() + " " +
-                  e.get_solved_words().__str__())
-
-        solutions2 = Crack.explore_uniques(self.dictionary1, self.alphabet1, [])
-        # solved_text = solved_alphabet.decipher('eyvuxybsiaybuxiebuiaciklelbkklnwlbrwa')
-        # expected_solved_text = 'rubicundosunicornios?olaranllameantes'
-        # self.assertEquals(solved_text, expected_solved_text)
-        print(solutions2)
-        for e in solutions2:
-            print(e.decipher('eyvuxybsiaybuxiebuiaciklelbkklnwlbrwa')
-                  + " " + e.get_number_of_placed_letters().__str__() + " " + e.get_number_of_words().__str__() + " " +
-                  e.get_solved_words().__str__())
-
-        c = Comparator(solutions, solutions2)
-        max = 0
-        it2 = None
-        it1 = None
-        for solution1, index in c.get_solution_pairs():
-            # print(solution1.get_solving_index())
-            for solution2 in index:
-                if max < index[solution2]:
-                    max = index[solution2]
-                    it1 = solution2
-                    it2 = solution1
-                # print(solution2.get_solving_index(), index[solution2])
-        print(max)
-        print(it2.decipher('eyvuxybsiaybuxiebuiaciklelbkklnwlbrwa'))
-        print(it1.decipher('cywkivklbxiswzlcuirleizlrieui'))
-
-    def test_uniques(self):
         solutions = Crack.explore_uniques(self.dictionary1, self.alphabet1, [])
-        # solved_text = solved_alphabet.decipher('eyvuxybsiaybuxiebuiaciklelbkklnwlbrwa')
-        # expected_solved_text = 'rubicundosunicornios?olaranllameantes'
-        # self.assertEquals(solved_text, expected_solved_text)
-        print(solutions)
-        for e in solutions:
-            print(e.decipher('eyvuxybsiaybuxiebuiaciklelbkklnwlbrwa')
-                  + " " + e.get_number_of_placed_letters().__str__() + " " + e.get_number_of_words().__str__() + " " +
-                  e.get_solved_words().__str__())
+        solutions2 = Crack.explore_uniques(self.dictionary2, self.alphabet2, [])
+
+        comparator = Comparator(solutions, solutions2)
+        best_pair = comparator.best()
+
+        # Optimal separate solutions
+        assert(best_pair[1].decipher(self.raw_text1) == 'rubicundosunicornios?olaranllameantes')
+        assert(best_pair[0].decipher(self.raw_text2) == 'vueloslancomegaviotarogatorio')
 
 
-class CrackTextWithoutUniqueWords(unittest.TestCase):
-
-    def setUp(self):
-        patterns = Patterns('spanishPatterns')
-        # fronteradelosbesosseranmananacuandoenladentadurasientasunarma
-        ciphered_text = 'deibrwelswkiavwaiaawelbnlblblxylbsiwbklswbrlsyelauwbrlayblenl'
-        self.text = Text(ciphered_text)
-        possible_words = self.text.extract_words()
-        solving_dict = patterns.matching_words_dic(possible_words)
-        self.dictionary = Dictionary(solving_dict)
-        self.alphabet = Alphabet()
-        self.alphabet.match('qwertyuiopasdfghjklzxcvbnm', 'wertyuiopqsdfghjklaxcvbnmz')
-        print(self.alphabet.decipher('deibrwelswkiavwaiaawelbnlblblxylbsiwbklswbrlsyelauwbrlayblenl'))
-
-    def test_stats(self):
-        solutions = Crack.stats(self.text, self.dictionary)
-        # solved_text = solved_alphabet.decipher('deibrwelswkiavwaiaawelbnlblblxylbsiwbklswbrlsyelauwbrlayblenl')
-        print(solutions)
-        for e in solutions:
-            print(e.decipher('deibrwelswkiavwaiaawelbnlblblxylbsiwbklswbrlsyelauwbrlayblenl'))
-        # print(solved_text)
-
-    def test_brute(self):
-        solved_alphabet = Crack.brute_exploration(self.dictionary)
-        solved_text = solved_alphabet.decipher('deibrwelswkiavwaiaawelbnlblblxylbsiwbklswbrlsyelauwbrlayblenl')
-        print(solved_text)
+# class CrackTextWithoutUniqueWords(unittest.TestCase):
+#
+#     def setUp(self):
+#         patterns = Patterns('spanishPatterns')
+#         # fronteradelosbesosseranmananacuandoenladentadurasientasunarma
+#         ciphered_text = 'deibrwelswkiavwaiaawelbnlblblxylbsiwbklswbrlsyelauwbrlayblenl'
+#         self.text = Text(ciphered_text)
+#         possible_words = self.text.extract_words()
+#         solving_dict = patterns.matching_words_dic(possible_words)
+#         self.dictionary = Dictionary(solving_dict)
+#         self.alphabet = Alphabet()
+#         self.alphabet.match('qwertyuiopasdfghjklzxcvbnm', 'wertyuiopqsdfghjklaxcvbnmz')
+#         print(self.alphabet.decipher('deibrwelswkiavwaiaawelbnlblblxylbsiwbklswbrlsyelauwbrlayblenl'))
+#
+#     def test_stats(self):
+#         solutions = Crack.stats(self.text, self.dictionary)
+#         # solved_text = solved_alphabet.decipher('deibrwelswkiavwaiaawelbnlblblxylbsiwbklswbrlsyelauwbrlayblenl')
+#         print(solutions)
+#         for e in solutions:
+#             print(e.decipher('deibrwelswkiavwaiaawelbnlblblxylbsiwbklswbrlsyelauwbrlayblenl') +
+#                   " " + e.get_number_of_placed_letters().__str__() + " " + e.get_number_of_words().__str__() + " " +
+#                   e.get_solved_words().__str__())
+#
+#     def test_brute(self):
+#         pass
+#         # solutions = Crack.brute_exploration(self.dictionary)
+#         # solved_text = solved_alphabet.decipher('deibrwelswkiavwaiaawelbnlblblxylbsiwbklswbrlsyelauwbrlayblenl')
+#         # print(solved_text)
 
 
 if __name__ == '__main__':

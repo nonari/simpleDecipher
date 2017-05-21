@@ -35,8 +35,10 @@ class Alphabet:
     def match(self, ciphered: str, solved: str) -> None:
         if len(ciphered) != len(solved):
             raise ValueError('Parameters lengths differ')
-        self._solved_words.append(solved)
-        self._number_of_words += 1
+
+        if len(ciphered) > 4:
+            self._solved_words.append(solved)
+            self._number_of_words += 1
 
         for i in range(len(ciphered)):
             self._number_of_placed_letters += 1
@@ -84,6 +86,17 @@ class Alphabet:
         for letter in word:
             ciphered_word += self._ciphering_index[ord(letter) - 97]
         return ciphered_word
+
+    def goodness(self) -> float:
+        # TODO improve this shit
+        if self._solved_letters.__len__() == 0 or self._number_of_words == 0:
+            return 0
+        else:
+            return (self.get_number_of_placed_letters() / self.get_number_of_words()) * self._solved_letters.__len__()
+
+    def merge(self, solution: 'Alphabet') -> None:
+        for ciphered in solution.get_solved_letters():
+            self.match(ciphered, solution.decipher(ciphered))
 
     @staticmethod
     def generate_abc_list() -> List[str]:
