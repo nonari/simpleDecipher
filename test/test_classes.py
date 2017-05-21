@@ -1,11 +1,11 @@
 import unittest
 
-from src.Comparator import Comparator
-from src.Alphabet import Alphabet
-from src.Patterns import Patterns
-from src.Text import Text
-from src.Dictionary import Dictionary
-import Crack
+from simpledecipher.comparator import Comparator
+from simpledecipher.alphabet import Alphabet
+from simpledecipher.patterns import Patterns
+from simpledecipher.textprocessor import Text
+from simpledecipher.dictionary import Dictionary
+import algorithms
 
 
 class AlphabetTest(unittest.TestCase):
@@ -231,8 +231,8 @@ class CrackTextWithUniqueWordsTest(unittest.TestCase):
         self.alphabet2 = Alphabet()
 
     def test_divide_to_win(self):
-        solutions = Crack.explore_uniques(self.dictionary1, self.alphabet1, [])
-        solutions2 = Crack.explore_uniques(self.dictionary2, self.alphabet2, [])
+        solutions = algorithms.explore_uniques(self.dictionary1, self.alphabet1, [])
+        solutions2 = algorithms.explore_uniques(self.dictionary2, self.alphabet2, [])
 
         comparator = Comparator(solutions, solutions2)
         best_pair = comparator.best()

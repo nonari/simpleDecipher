@@ -1,5 +1,5 @@
 from typing import List, Dict, Tuple
-from src.Alphabet import Alphabet
+from simpledecipher.alphabet import Alphabet
 
 # Class for comparing two lists of solution Alphabets
 

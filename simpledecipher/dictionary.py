@@ -1,7 +1,7 @@
 import copy
 import time
 from typing import List
-from src.Alphabet import Alphabet
+from simpledecipher.alphabet import Alphabet
 
 # Class for handling possible words in spaced texts
 

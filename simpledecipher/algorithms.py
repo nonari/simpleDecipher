@@ -1,8 +1,8 @@
 from typing import List
-from src.Alphabet import Alphabet
-from src.Text import Text
-from src.Progress import Progress
-from src.Dictionary import Dictionary
+from simpledecipher.alphabet import Alphabet
+from simpledecipher.textprocessor import Text
+from simpledecipher.progress import Progress
+from simpledecipher.dictionary import Dictionary
 from multiprocessing import Process
 import os
 

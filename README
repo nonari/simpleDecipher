@@ -1,0 +1,25 @@
+SIMPLE DECIPHER PROJECT
+========================
+
+This software tries to solve the problem of deciphering a simple
+substitution ciphered text with no spaces.
+
+This project was born from a capture the flag game proposed by an
+IT Security teacher at the university. The game is about choosing
+a 1000 letters game and ciphering it with the simple substitution
+algorithm.
+
+For long texts CrypTool makes it simple to decipher by letter
+statistics. For small ones there are various online tools to
+easily solve it, but only when the text is normally spaced.
+When no spaces are leaved, deciphering a small text becomes
+harder.
+
+This tool makes the following steps to decipher the text:
+    1. Two small pieces of ciphered text are passed as arguments
+    2. All possible words patterns are extracted form the pieces
+    3. Every pattern is matched with all possible dictionary words
+    4. A tree search algorithm its performed on each piece
+    5. Both sets of solutions generated are compared and the most
+       similar couple is chosen as the probable solution
+

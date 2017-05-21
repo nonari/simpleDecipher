@@ -1,11 +1,11 @@
-from src.Crack import handle_crack
-from src.Crack import brute_exploration
-from src.Crack import stats
-from src.Crack import explore_uniques
-from src.Alphabet import Alphabet
-from src.Patterns import Patterns
-from src.Text import Text
-from src.Dictionary import Dictionary
+from simpledecipher.algorithms import handle_crack
+from simpledecipher.algorithms import brute_exploration
+from simpledecipher.algorithms import stats
+from simpledecipher.algorithms import explore_uniques
+from simpledecipher.alphabet import Alphabet
+from simpledecipher.patterns import Patterns
+from simpledecipher.textprocessor import Text
+from simpledecipher.dictionary import Dictionary
 import os
 import sys
 
