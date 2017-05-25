@@ -5,7 +5,7 @@ from simpledecipher.alphabet import Alphabet
 from simpledecipher.patterns import Patterns
 from simpledecipher.textprocessor import Text
 from simpledecipher.dictionary import Dictionary
-import algorithms
+import simpledecipher.algorithms as algorithms
 
 
 class AlphabetTest(unittest.TestCase):
