@@ -4,7 +4,10 @@ from simpledecipher.textprocessor import Text
 from simpledecipher.progress import Progress
 from simpledecipher.dictionary import Dictionary
 from multiprocessing import Process
-import os
+from simpledecipher.logger import Logger
+from os import fdopen
+
+LOG = Logger.get_logger("algorithms")
 
 
 def stats(text: Text, dictionary: Dictionary) -> List[Alphabet]:
@@ -17,19 +20,21 @@ def stats(text: Text, dictionary: Dictionary) -> List[Alphabet]:
             for b in list(text_letters_count):
                 if b != a:
                     combined_letters.insert(0, ((a[0], combination[0]), (b[0], combination[1])))
-    print(combined_letters)
+    LOG.info('@stats-> Combinations chosen:' + combined_letters.__str__())
     n = 0
     solutions = []
     for combination in combined_letters:
         alphabet = Alphabet()
         alphabet.match(combination[0][0], combination[0][1])
         alphabet.match(combination[1][0], combination[1][1])
+        LOG.info('@stats->' + alphabet.__str__())
         dictionary_copy = dictionary.__deepcopy__()
         dictionary_copy.filter(alphabet)
         solutions += explore_uniques(dictionary, alphabet, [], 0)
+        LOG.info('@stats->' + solutions)
         n += 1
         if 0 == divmod(n, 10):
-            print(pr.stats())
+            LOG.info('@stats->' + pr.stats())
             print(chr(27) + "[2J")  # Para que servia esta brujeria?
             print('(', n, '/', len(combined_letters), ')')
 
@@ -37,27 +42,24 @@ def stats(text: Text, dictionary: Dictionary) -> List[Alphabet]:
     
 
 def explore_uniques(dictionary: Dictionary, alphabet: Alphabet, uniques: List[str], n: int = 0) -> List[Alphabet]:
-    # print('')
     if n > 0:
-        # print('Uniques for filter: ' + uniques.__str__())
+        LOG.info('@explore-> Uniques for filter: ' + uniques.__str__())
         first = uniques[0]
         solution = dictionary.solutions(first)[0]
         alphabet.match(first, solution)
-        # print(alphabet.get_number_of_placed_letters())
-        # print(alphabet.get_number_of_words())
         dictionary.filter(alphabet)
         uniques = dictionary.uniques()
 
-        # print('Next uniques: ' + uniques.__str__())
-        # if len(uniques) == 0:
-        #     pr.leaf((first, solution))
-        # else:
-        #     pr.node((first, solution))
+        LOG.info('@explore-> Next uniques: ' + uniques.__str__())
+        if len(uniques) == 0:
+            LOG.info('@explore-> ' + pr.leaf((first, solution)))
+        else:
+            LOG.info('@explore-> ' + pr.node((first, solution)))
     else:
-        # pr.root()
+        LOG.info('@explore-> ' + pr.root())
         if len(uniques) == 0:
             uniques = dictionary.uniques()
-        # print('Uniques: ' + uniques.__str__())
+            LOG.info('@explore-> Uniques: ' + uniques.__str__())
 
     # Explore the next nodes with the new uniques and return the max result
     max_alphabet = alphabet
@@ -68,8 +70,7 @@ def explore_uniques(dictionary: Dictionary, alphabet: Alphabet, uniques: List[st
         nth_word = uniques.pop(i)
         uniques.insert(0, nth_word)
         solutions += explore_uniques(dictionary.__deepcopy__(), alphabet.__deepcopy__(), uniques.copy(), n)
-        # print(pr.node_up())
-
+        LOG.info('@explore-> ' + pr.node_up().__str__())
     return solutions
 
 
@@ -103,8 +104,8 @@ def handle_crack(*args, **kwargs):
 
 
 def handle_halt(**kwargs):
-    fout = os.fdopen(kwargs['fout'], mode='w')
-    fin = os.fdopen(kwargs['fin'], mode='r')
+    fout = fdopen(kwargs['fout'], mode='w')
+    fin = fdopen(kwargs['fin'], mode='r')
     print('Press ENTER to halt cracking process', file=fout, flush=True)
     fin.read(1)
     print('Process halted', file=fout, flush=True)

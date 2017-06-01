@@ -23,25 +23,28 @@ class Progress:
         # Current words path
         self._temp_path_words = []
 
-    def node(self, word: tuple):
+    def node(self, word: tuple) -> str:
+        info = ''
         if divmod(self._node_counter, 100000)[1] == 0:
-            print(self.stats())
-        print('Node: ' + self._node_counter.__str__())
-        print('Current: ' + word.__str__())
+            info += self.stats()
+        info += 'Node: ' + self._node_counter.__str__()
+        info += 'Current: ' + word.__str__()
         self._node_counter += 1
         self._current_depth += 1
         self._temp_path_words.append(word)
+        return info
 
     def node_up(self) -> str:
-        print('')
-        print('Up ↑')
+        info = ''
+        info += 'Up ↑ '
         if self._current_depth > 0:
             self._current_depth -= 1
-            return self._temp_path_words.pop(-1)
+            info += self._temp_path_words.pop(-1).__str__()
+        return info
 
-    def leaf(self, word):
-        print('Node: ' + self._node_counter.__str__() + ' (Leaf)')
-        print('Current: ' + word.__str__())
+    def leaf(self, word) -> str:
+        info = 'Node: ' + self._node_counter.__str__() + ' (Leaf)'
+        info += 'Current: ' + word.__str__()
         self._temp_path_words.append(word)
         if len(self._temp_path_words) > len(self._path_words):
             self._path_words = self._temp_path_words.copy()
@@ -52,13 +55,14 @@ class Progress:
         self._avg_depth = (self._current_depth + (self._avg_depth * float(self._leaf_nodes)))\
             / (self._leaf_nodes + 1)
         self._leaf_nodes += 1
+        return info
 
-    def root(self):
-        print('ROOT')
+    def root(self) -> str:
         self._current_depth = 0
         self._node_counter += 1
+        return 'ROOT NODE'
 
-    def stats(self):
+    def stats(self) -> str:
         elapsed = time.time() - self._timestamp
         self._timestamp = time.time()
         nodes = self._node_counter - self._node_record

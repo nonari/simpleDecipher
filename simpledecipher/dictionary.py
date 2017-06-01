@@ -1,7 +1,10 @@
 import copy
 import time
 from typing import List
+from simpledecipher.logger import Logger
 from simpledecipher.alphabet import Alphabet
+
+LOG = Logger.get_logger("Dictionary")
 
 # Class for handling possible words in spaced texts
 
@@ -30,7 +33,7 @@ class Dictionary:
             if len(self._d[ciphered]) == 0:
                 self._d.pop(ciphered)
         t = time.time() - t1
-        # print('Filtered in ' + t.__str__() + ' ms')
+        LOG.debug('@filter-> Filtered in ' + t.__str__() + ' ms')
 
     # Returns the single solution words
     def uniques(self) -> List[str]:
