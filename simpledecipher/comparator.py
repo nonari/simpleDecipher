@@ -40,7 +40,7 @@ class Comparator:
                         matching_index[r_alphabet] = 1
 
     # FIXME
-    def sort(self, limit: int=5) -> List[Tuple[Alphabet, Alphabet]]:
+    def sort(self, limit: int=5) -> List[Tuple[Alphabet, Alphabet, int]]:
         ordered_solutions = []
         for solution1, index in self.get_solution_pairs():
             for solution2 in index:
@@ -50,8 +50,8 @@ class Comparator:
                     ordered_solutions.append((solution1, solution2, matches, heuristic_result))
         result = []
         ordered_solutions.sort(key=lambda t: (t[2], t[3]))
-        for (solution1, solution2, _, _) in ordered_solutions:
-            result.append((solution1, solution2))
+        for (solution1, solution2, matches, h) in ordered_solutions:
+            result.append((solution1, solution2, matches))
         return result
 
     def best(self) -> Tuple[Alphabet, Alphabet]:

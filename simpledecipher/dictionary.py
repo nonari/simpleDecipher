@@ -6,8 +6,8 @@ from simpledecipher.alphabet import Alphabet
 
 LOG = Logger.get_logger("Dictionary")
 
-# Class for handling possible words in spaced texts
 
+# Class for handling possible words in spaced texts
 
 class Dictionary:
 

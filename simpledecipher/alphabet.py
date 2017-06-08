@@ -1,5 +1,8 @@
 from typing import List, Set
 import random
+from simpledecipher.logger import Logger
+
+LOG = Logger.get_logger('Alphabet')
 
 # Class for handling solution alphabet
 # Can only handle an [a-z] ASCII alphabet
@@ -31,7 +34,7 @@ class Alphabet:
         clone._solved_words = self._solved_words.copy()
         return clone
 
-    # Matches ciphered letter with solved
+    # Matches ciphered word with solved
     def match(self, ciphered: str, solved: str) -> None:
         if len(ciphered) != len(solved):
             raise ValueError('Parameters lengths differ')
@@ -47,6 +50,13 @@ class Alphabet:
 
             c_code = ord(ciphered[i]) - 97
             s_code = ord(solved[i]) - 97
+
+            # For debugging purposes:
+            # Warn if solving and ciphering indexes sets don't remain bijective or matching overwritten
+            # if (self._solving_index[c_code] != '?' and self._solving_index[c_code] != solved[i]) \
+            #         or (self._ciphering_index[s_code] != '?' and self._ciphering_index[s_code] != ciphered[i]):
+            #     LOG.warn('Inconsistent: ' + ciphered[i] + ', ' + solved[i])
+
             self._solving_index[c_code] = solved[i]
             self._ciphering_index[s_code] = ciphered[i]
 
@@ -54,7 +64,7 @@ class Alphabet:
         for ciphered_word, solved_word in ciphered_words, solved_words:
             self.match(ciphered_word, solved_word)
 
-    # Checks if, for the already solved letters, ciphered word c matches with exp
+    # Checks if, for the already solved letters, ciphered word matches with expected
     def fits(self, ciphered: str, expected: str) -> bool:
         deciphered = self.decipher(ciphered)
         for i in range(len(ciphered)):

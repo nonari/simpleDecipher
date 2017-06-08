@@ -20,46 +20,45 @@ def stats(text: Text, dictionary: Dictionary) -> List[Alphabet]:
             for b in list(text_letters_count):
                 if b != a:
                     combined_letters.insert(0, ((a[0], combination[0]), (b[0], combination[1])))
-    LOG.info('@stats-> Combinations chosen:' + combined_letters.__str__())
+    LOG.debug('@stats-> Combinations chosen:' + combined_letters.__str__())
     n = 0
     solutions = []
     for combination in combined_letters:
         alphabet = Alphabet()
         alphabet.match(combination[0][0], combination[0][1])
         alphabet.match(combination[1][0], combination[1][1])
-        LOG.info('@stats->' + alphabet.__str__())
+        LOG.debug('@stats->' + alphabet.__str__())
         dictionary_copy = dictionary.__deepcopy__()
         dictionary_copy.filter(alphabet)
-        solutions += explore_uniques(dictionary, alphabet, [], 0)
-        LOG.info('@stats->' + solutions)
+        solutions += explore_uniques(dictionary_copy, alphabet, [], 0)
+        solutions.sort(key=lambda t: t.goodness())
         n += 1
         if 0 == divmod(n, 10):
-            LOG.info('@stats->' + pr.stats())
+            LOG.debug('@stats->' + pr.stats())
             print(chr(27) + "[2J")  # Para que servia esta brujeria?
             print('(', n, '/', len(combined_letters), ')')
-
     return solutions
     
 
 def explore_uniques(dictionary: Dictionary, alphabet: Alphabet, uniques: List[str], n: int = 0) -> List[Alphabet]:
     if n > 0:
-        LOG.info('@explore-> Uniques for filter: ' + uniques.__str__())
+        LOG.debug('@explore-> Uniques for filter: ' + uniques.__str__())
         first = uniques[0]
         solution = dictionary.solutions(first)[0]
         alphabet.match(first, solution)
         dictionary.filter(alphabet)
         uniques = dictionary.uniques()
 
-        LOG.info('@explore-> Next uniques: ' + uniques.__str__())
+        LOG.debug('@explore-> Next uniques: ' + uniques.__str__())
         if len(uniques) == 0:
-            LOG.info('@explore-> ' + pr.leaf((first, solution)))
+            LOG.debug('@explore-> ' + pr.leaf((first, solution)))
         else:
-            LOG.info('@explore-> ' + pr.node((first, solution)))
+            LOG.debug('@explore-> ' + pr.node((first, solution)))
     else:
-        LOG.info('@explore-> ' + pr.root())
+        LOG.debug('@explore-> ' + pr.root())
         if len(uniques) == 0:
             uniques = dictionary.uniques()
-            LOG.info('@explore-> Uniques: ' + uniques.__str__())
+            LOG.debug('@explore-> Uniques: ' + uniques.__str__())
 
     # Explore the next nodes with the new uniques and return the max result
     max_alphabet = alphabet
@@ -70,7 +69,7 @@ def explore_uniques(dictionary: Dictionary, alphabet: Alphabet, uniques: List[st
         nth_word = uniques.pop(i)
         uniques.insert(0, nth_word)
         solutions += explore_uniques(dictionary.__deepcopy__(), alphabet.__deepcopy__(), uniques.copy(), n)
-        LOG.info('@explore-> ' + pr.node_up().__str__())
+        LOG.debug('@explore-> ' + pr.node_up().__str__())
     return solutions
 
 

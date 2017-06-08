@@ -154,8 +154,7 @@ class TextTest(unittest.TestCase):
 
 class ComparatorTest(unittest.TestCase):
 
-    @staticmethod
-    def test_count_correct():
+    def test_count_correct(self):
         solution1 = Alphabet()
         solution2 = Alphabet()
         solution3 = Alphabet()
@@ -168,9 +167,8 @@ class ComparatorTest(unittest.TestCase):
             for solution2 in index:
                 assert exp_matching_dict[solution2] == index[solution2]
 
-    @staticmethod
-    def test_match_count():
-        # Max 15000
+    def test_match_count(self):
+        # Max 18000
         solutions1 = Alphabet.generate_random_solutions(150)
         solutions2 = Alphabet.generate_random_solutions(150)
 
@@ -195,6 +193,7 @@ class IntegrationTest(unittest.TestCase):
 
     def test_correct_deciphered_word(self):
         patterns = Patterns('spanishPatterns')
+        #                rubicundosunicorniossobrevolaran
         ciphered_text = 'eyvuxybsiaybuxiebuiaaivewciklelb'
         text = Text(ciphered_text)
         possible_words = text.extract_words()
@@ -213,7 +212,7 @@ class CrackTextWithUniqueWordsTest(unittest.TestCase):
 
     def setUp(self):
         patterns1 = Patterns('spanishPatterns')
-        # rubicundosunicorniosvolaranllameantes
+        #                 rubicundosunicorniosvolaranllameantes
         self.raw_text1 = 'eyvuxybsiaybuxiebuiaciklelbkklnwlbrwa'
         text1 = Text(self.raw_text1)
         possible_words1 = text1.extract_words()
@@ -222,7 +221,7 @@ class CrackTextWithUniqueWordsTest(unittest.TestCase):
         self.alphabet1 = Alphabet()
 
         patterns2 = Patterns('spanishPatterns')
-        # vueloblancodegaviotarogatorio
+        #                 vueloblancodegaviotarogatorio
         self.raw_text2 = 'cywkivklbxiswzlcuirleizlrieui'
         text2 = Text(self.raw_text2)
         possible_words2 = text2.extract_words()

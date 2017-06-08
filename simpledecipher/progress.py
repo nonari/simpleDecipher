@@ -28,23 +28,21 @@ class Progress:
         if divmod(self._node_counter, 100000)[1] == 0:
             info += self.stats()
         info += 'Node: ' + self._node_counter.__str__()
-        info += 'Current: ' + word.__str__()
+        info += '; Depth: ' + self._current_depth.__str__() + '; Current: ' + word.__str__()
         self._node_counter += 1
         self._current_depth += 1
         self._temp_path_words.append(word)
         return info
 
     def node_up(self) -> str:
-        info = ''
-        info += 'Up ↑ '
-        if self._current_depth > 0:
-            self._current_depth -= 1
-            info += self._temp_path_words.pop(-1).__str__()
+        self._current_depth -= 1
+        info = 'Up to level -> ' + self._current_depth.__str__() + '; Path step:'
+        info += self._temp_path_words.pop(-1).__str__()
         return info
 
     def leaf(self, word) -> str:
-        info = 'Node: ' + self._node_counter.__str__() + ' (Leaf)'
-        info += 'Current: ' + word.__str__()
+        info = 'Node: ' + self._node_counter.__str__() + '; (Leaf); '
+        info += 'Depth: ' + self._current_depth.__str__() + '; Current: ' + word.__str__()
         self._temp_path_words.append(word)
         if len(self._temp_path_words) > len(self._path_words):
             self._path_words = self._temp_path_words.copy()

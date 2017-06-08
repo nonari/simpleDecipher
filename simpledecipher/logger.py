@@ -1,5 +1,4 @@
 import logging
-
 import sys
 
 
@@ -9,9 +8,14 @@ class Logger:
     def get_logger(name: str):
         logger = logging.getLogger(name)
         logger.setLevel(logging.DEBUG)
-        handler = logging.StreamHandler(sys.stdout)
-        handler.setLevel(logging.DEBUG)
-        formatter = logging.Formatter("%(message)s")
-        handler.setFormatter(formatter)
-        logger.addHandler(handler)
+        progress_handler = logging.StreamHandler(sys.stdout)
+        progress_handler.setLevel(logging.DEBUG)
+        progress_formatter = logging.Formatter("%(message)s")
+        progress_handler.setFormatter(progress_formatter)
+        solutions_handler = logging.FileHandler(filename='D:/Proyectos/Python/simpledecipher/logs/temp.log')
+        solutions_handler.setLevel(logging.INFO)
+        solutions_formatter = logging.Formatter("%(message)s")
+        progress_handler.setFormatter(solutions_formatter)
+        logger.addHandler(progress_handler)
+        logger.addHandler(solutions_handler)
         return logger
