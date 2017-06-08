@@ -108,6 +108,22 @@ class Alphabet:
         for ciphered in solution.get_solved_letters():
             self.match(ciphered, solution.decipher(ciphered))
 
+    def intersect_with(self, other: 'Alphabet') -> 'Alphabet':
+        return Alphabet.intersect(self, other)
+
+    @staticmethod
+    def intersect(alphabet1: 'Alphabet', alphabet2: 'Alphabet') -> 'Alphabet':
+        new_alphabet = Alphabet()
+        for solved in alphabet1.get_solved_letters():
+            if solved in alphabet2.get_solved_letters():
+                if alphabet1.decipher(solved) == alphabet2.decipher(solved):
+                    new_alphabet.match(solved, alphabet1.decipher(solved))
+        for solved in alphabet2.get_solved_letters():
+            if solved in alphabet1.get_solved_letters():
+                if alphabet2.decipher(solved) == alphabet1.decipher(solved):
+                    new_alphabet.match(solved, alphabet2.decipher(solved))
+        return new_alphabet
+
     @staticmethod
     def generate_abc_list() -> List[str]:
         abc = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
