@@ -146,6 +146,11 @@ class TextTest(unittest.TestCase):
                 break
         assert result
 
+    def test_extract_with_position(self):
+        possible_words_with_pos = self.text.extract_words_with_position()
+        assert(possible_words_with_pos['ylbsi'] == (1, 5))
+        assert(possible_words_with_pos['ylbsiwbklswbrls'] == (1, 15))
+
     def test_reduce_key(self):
         pass
         # ciphered_text = open('texts/reto_07.txt', encoding='iso-8859-1').read()
@@ -187,6 +192,16 @@ class ComparatorTest(unittest.TestCase):
             if not result:
                 break
         assert result
+
+    def test_overlaps(self):
+        text = Text('catastropajoblanco')
+        word_positions = text.extract_words_with_position(max_len=15)
+        alphabet = Alphabet()
+        alphabet.match('catastro', 'catastro')
+        alphabet.match('astropajo', 'astropajo')
+        alphabet.match('ajoblanco', 'ajoblanco')
+        overlaps = Comparator.overlaps(alphabet.get_solved_words(), word_positions)
+        assert(overlaps == 8)
 
 
 class IntegrationTest(unittest.TestCase):

@@ -50,14 +50,18 @@ class ASD():
         for e in solutions2:
             LOG.info(e.decipher('xylbsiwbklswbrlsyelauwbrlayblenl') + e.goodness().__str__())
 
-        comparator = Comparator(solutions2, solutions1)
+        comparator = Comparator(solutions2, solutions1, self.text1.extract_words_with_position(), self.text2.extract_words_with_position())
         best_pair = comparator.best()
 
         # Optimal separate solutions
         print(best_pair[0].decipher(self.ciphered_text1))
         print(best_pair[1].decipher(self.ciphered_text2))
-        for e,i,m in comparator.sort():
+        result = comparator.sort()
+        for e,i,m,n in result:
             LOG.info(m)
+            LOG.info(n)
+            LOG.info(e.goodness())
+            LOG.info(i.goodness())
             LOG.info(e.__str__())
             LOG.info(i.__str__())
             LOG.info(i.decipher(self.ciphered_text2))

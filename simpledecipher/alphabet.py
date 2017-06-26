@@ -37,10 +37,10 @@ class Alphabet:
     # Matches ciphered word with solved
     def match(self, ciphered: str, solved: str) -> None:
         if len(ciphered) != len(solved):
-            raise ValueError('Parameters lengths differ')
+            raise ValueError('Ciphered: \'' + ciphered + '\' length differs from solved: \'' + solved + '\'')
 
         if len(ciphered) > 4:
-            self._solved_words.append(solved)
+            self._solved_words.append(ciphered)
             self._number_of_words += 1
 
         for i in range(len(ciphered)):
@@ -61,6 +61,8 @@ class Alphabet:
             self._ciphering_index[s_code] = ciphered[i]
 
     def match_list(self, ciphered_words: List[str], solved_words: List[str]) -> None:
+        if len(ciphered_words) != len(solved_words):
+            raise ValueError('Lists lengths differ')
         for ciphered_word, solved_word in ciphered_words, solved_words:
             self.match(ciphered_word, solved_word)
 
@@ -104,13 +106,40 @@ class Alphabet:
         else:
             return (self.get_number_of_placed_letters() / self.get_number_of_words()) * self._solved_letters.__len__()
 
-    def merge(self, solution: 'Alphabet') -> None:
-        for ciphered in solution.get_solved_letters():
-            self.match(ciphered, solution.decipher(ciphered))
+    def unite_with(self, solution: 'Alphabet') -> 'Alphabet':
+        return self.unite(self, solution)
 
     def intersect_with(self, other: 'Alphabet') -> 'Alphabet':
         return Alphabet.intersect(self, other)
 
+    # Merge non conflicting changes
+    @staticmethod
+    def unite(alphabet1: 'Alphabet', alphabet2: 'Alphabet') -> 'Alphabet':
+        new_alphabet = Alphabet()
+
+        for solved in alphabet1.get_solved_letters():
+            if solved in alphabet2.get_solved_letters():
+                if alphabet1.decipher(solved) == alphabet2.decipher(solved):
+                    new_alphabet.match(solved, alphabet1.decipher(solved))
+            solution = alphabet1.decipher(solved)
+            solved_set = alphabet2.get_solved_letters()
+            reverse_solved_set = alphabet2.get_reverse_solved_letters()
+            if solved not in solved_set and solution not in reverse_solved_set:
+                alphabet1.match(solved, solution)
+
+        for solved in alphabet2.get_solved_letters():
+            if solved in alphabet1.get_solved_letters():
+                if alphabet2.decipher(solved) == alphabet1.decipher(solved):
+                    new_alphabet.match(solved, alphabet2.decipher(solved))
+            solution = alphabet2.decipher(solved)
+            solved_set = alphabet1.get_solved_letters()
+            reverse_solved_set = alphabet1.get_reverse_solved_letters()
+            if solved not in solved_set and solution not in reverse_solved_set:
+                alphabet2.match(solved, solution)
+
+        return new_alphabet
+
+    # Get coincident solutions
     @staticmethod
     def intersect(alphabet1: 'Alphabet', alphabet2: 'Alphabet') -> 'Alphabet':
         new_alphabet = Alphabet()
@@ -178,10 +207,10 @@ class Alphabet:
         return self._solved_words
 
     def __str__(self):
-        solving_str = 'Solving index: ' + self.get_solving_index().__str__()
-        ciphering_str = 'Ciphering index: ' + self.get_ciphering_index().__str__()
-        solved_letters_str = 'Solved letters: ' + self.get_solved_letters().__str__()
-        reverse_solved_letters_str = "Reverse solved: " + self.get_reverse_solved_letters().__str__()
+        solving_str = 'Solving index: ' + self._solving_index.__str__()
+        ciphering_str = 'Ciphering index: ' + self._ciphering_index.__str__()
+        solved_letters_str = 'Solved letters: ' + self._solved_letters.__str__()
+        reverse_solved_letters_str = "Reverse solved: " + self._reverse_solved_letters.__str__()
         result_str = 'Alphabet: {' + solving_str + '\n' + ciphering_str + '\n' \
                      + solved_letters_str + '\n' + reverse_solved_letters_str
         return result_str

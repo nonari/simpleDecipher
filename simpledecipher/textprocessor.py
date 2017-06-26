@@ -1,5 +1,5 @@
 import unicodedata
-from typing import List, Tuple, Set
+from typing import List, Tuple, Set, Dict
 
 # Class for handling ciphered text processing
 
@@ -125,21 +125,38 @@ class Text:
         self._text = text
 
     # Extract possible words
-    def extract_words(self) -> List[str]:
+    def extract_words(self, min_len=5, max_len=15) -> List[str]:
+        words = []
         if self._space_symbol is not None:
-            words = []
             for word in self._text.split(self._space_symbol):
-                if len(word) > 5:
+                if len(word) > min_len:
                     words.append(word)
         else:
-            words = []
             text_length = self._text.__len__()
-            max_word_len = 15
-            upper_limit = max_word_len if text_length > max_word_len else text_length
-            for i in range(5, upper_limit + 1):
+            upper_limit = max_len if text_length > max_len else text_length
+            for i in range(min_len, upper_limit + 1):
                 offset = 0
                 for j in range(text_length - i + 1):
                     words.append(self._text[offset:offset + i])
+                    offset += 1
+        return words
+
+    # Extract possible words with position in text
+    def extract_words_with_position(self, min_len=5, max_len=15) -> Dict[str, Tuple[int, int]]:
+        words = {}
+        if self._space_symbol is not None:
+            offset = 0
+            for word in self._text.split(self._space_symbol):
+                if len(word) > min_len:
+                    words[word] = (offset, offset + len(word))
+                offset += len(word)
+        else:
+            text_length = self._text.__len__()
+            upper_limit = max_len if text_length > max_len else text_length
+            for i in range(min_len, upper_limit + 1):
+                offset = 0
+                for j in range(text_length - i + 1):
+                    words[(self._text[offset:offset + i])] = (offset, offset + i - 1)
                     offset += 1
         return words
 
