@@ -12,7 +12,7 @@ class ASD():
 
     def setUp(self):
         patterns1 = Patterns('spanishPatterns')
-        #                 fronteradelosbesosseranmanana
+        #                      fronteradelosbesosseranmanana
         self.ciphered_text1 = 'deibrwelswkiavwaiaawelbnlblbl'
         self.text1 = Text(self.ciphered_text1)
         possible_words1 = self.text1.extract_words()
@@ -23,7 +23,7 @@ class ASD():
         # print(self.alphabet.decipher('deibrwelswkiavwaiaawelbnlblblxylbsiwbklswbrlsyelauwbrlayblenl'))
 
         patterns2 = Patterns('spanishPatterns')
-        #                 cuandoenladentadurasientasunarma
+        #                      cuandoenladentadurasientasunarma
         self.ciphered_text2 = 'xylbsiwbklswbrlsyelauwbrlayblenl'
         self.text2 = Text(self.ciphered_text2)
         possible_words2 = self.text2.extract_words()

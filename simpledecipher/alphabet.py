@@ -106,15 +106,15 @@ class Alphabet:
         else:
             return (self.get_number_of_placed_letters() / self.get_number_of_words()) * self._solved_letters.__len__()
 
-    def unite_with(self, solution: 'Alphabet') -> 'Alphabet':
-        return self.unite(self, solution)
+    def merge_with(self, solution: 'Alphabet') -> 'Alphabet':
+        return Alphabet.merge(self, solution)
 
     def intersect_with(self, other: 'Alphabet') -> 'Alphabet':
         return Alphabet.intersect(self, other)
 
     # Merge non conflicting changes
     @staticmethod
-    def unite(alphabet1: 'Alphabet', alphabet2: 'Alphabet') -> 'Alphabet':
+    def merge(alphabet1: 'Alphabet', alphabet2: 'Alphabet') -> 'Alphabet':
         new_alphabet = Alphabet()
 
         for solved in alphabet1.get_solved_letters():
@@ -122,20 +122,20 @@ class Alphabet:
                 if alphabet1.decipher(solved) == alphabet2.decipher(solved):
                     new_alphabet.match(solved, alphabet1.decipher(solved))
             solution = alphabet1.decipher(solved)
-            solved_set = alphabet2.get_solved_letters()
-            reverse_solved_set = alphabet2.get_reverse_solved_letters()
-            if solved not in solved_set and solution not in reverse_solved_set:
-                alphabet1.match(solved, solution)
+            solved_set2 = alphabet2.get_solved_letters()
+            reverse_solved_set2 = alphabet2.get_reverse_solved_letters()
+            if solved not in solved_set2 and solution not in reverse_solved_set2:
+                new_alphabet.match(solved, solution)
 
         for solved in alphabet2.get_solved_letters():
             if solved in alphabet1.get_solved_letters():
                 if alphabet2.decipher(solved) == alphabet1.decipher(solved):
                     new_alphabet.match(solved, alphabet2.decipher(solved))
             solution = alphabet2.decipher(solved)
-            solved_set = alphabet1.get_solved_letters()
-            reverse_solved_set = alphabet1.get_reverse_solved_letters()
-            if solved not in solved_set and solution not in reverse_solved_set:
-                alphabet2.match(solved, solution)
+            solved_set2 = alphabet1.get_solved_letters()
+            reverse_solved_set2 = alphabet1.get_reverse_solved_letters()
+            if solved not in solved_set2 and solution not in reverse_solved_set2:
+                new_alphabet.match(solved, solution)
 
         return new_alphabet
 
