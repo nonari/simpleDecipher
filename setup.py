@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='simpleDecipher',
-    version='0.0.1b',
+    version='0.0.1',
     packages=['simpledecipher'],
     url='https://github.com/nonari/simpleDecipher',
     license='GNU AGPLv3 ',

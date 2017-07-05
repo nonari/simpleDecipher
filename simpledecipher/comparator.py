@@ -43,8 +43,7 @@ class Comparator:
                     else:
                         matching_index[r_alphabet] = 1
 
-    # FIXME
-    def sort(self, limit: int=5) -> List[Tuple[Alphabet, Alphabet, int, int]]:
+    def sort(self, limit: int=5) -> List[Tuple[Alphabet, Alphabet]]:
         ordered_solutions = []
         for solution1, index in self.get_solution_pairs():
             for solution2 in index:
@@ -55,7 +54,7 @@ class Comparator:
         result = []
         ordered_solutions.sort(key=lambda t: (t[2], t[3]))
         for (solution1, solution2, matches, h) in ordered_solutions:
-            result.append((solution1, solution2, matches, self.overlaps(solution1.get_solved_words(), self._words_position_index1)+self.overlaps(solution2.get_solved_words(), self._words_position_index2)))
+            result.append((solution1, solution2))
         return result
 
     def best(self) -> Tuple[Alphabet, Alphabet]:
@@ -64,7 +63,6 @@ class Comparator:
         best_right = Alphabet()
         for solution1, index in self.get_solution_pairs():
             for solution2 in index:
-
                 bigger = index[solution2] >= max_matches
                 # TODO should use goodness()
                 better_left = solution1.get_solved_letters().__len__() > best_left.get_solved_letters().__len__()
@@ -76,6 +74,8 @@ class Comparator:
                     best_left = solution1
         return best_left, best_right
 
+    # Counts the overlaps between words of a solution Alphabet word set
+    # Seems ineffective to use this as goodness metric cause tried best solutions have very few overlaps
     @staticmethod
     def overlaps(words: List[str], position_index: Dict[str, Tuple[int, int]]) -> int:
         overlap_list = []

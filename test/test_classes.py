@@ -256,34 +256,37 @@ class CrackTextWithUniqueWordsTest(unittest.TestCase):
         assert(best_pair[0].decipher(self.raw_text2) == 'vueloslancomegaviotarogatorio')
 
 
-# class CrackTextWithoutUniqueWords(unittest.TestCase):
-#
-#     def setUp(self):
-#         patterns = Patterns('spanishPatterns')
-#         # fronteradelosbesosseranmananacuandoenladentadurasientasunarma
-#         ciphered_text = 'deibrwelswkiavwaiaawelbnlblblxylbsiwbklswbrlsyelauwbrlayblenl'
-#         self.text = Text(ciphered_text)
-#         possible_words = self.text.extract_words()
-#         solving_dict = patterns.matching_words_dic(possible_words)
-#         self.dictionary = Dictionary(solving_dict)
-#         self.alphabet = Alphabet()
-#         self.alphabet.match('qwertyuiopasdfghjklzxcvbnm', 'wertyuiopqsdfghjklaxcvbnmz')
-#         print(self.alphabet.decipher('deibrwelswkiavwaiaawelbnlblblxylbsiwbklswbrlsyelauwbrlayblenl'))
-#
-#     def test_stats(self):
-#         solutions = Crack.stats(self.text, self.dictionary)
-#         # solved_text = solved_alphabet.decipher('deibrwelswkiavwaiaawelbnlblblxylbsiwbklswbrlsyelauwbrlayblenl')
-#         print(solutions)
-#         for e in solutions:
-#             print(e.decipher('deibrwelswkiavwaiaawelbnlblblxylbsiwbklswbrlsyelauwbrlayblenl') +
-#                   " " + e.get_number_of_placed_letters().__str__() + " " + e.get_number_of_words().__str__() + " " +
-#                   e.get_solved_words().__str__())
-#
-#     def test_brute(self):
-#         pass
-#         # solutions = Crack.brute_exploration(self.dictionary)
-#         # solved_text = solved_alphabet.decipher('deibrwelswkiavwaiaawelbnlblblxylbsiwbklswbrlsyelauwbrlayblenl')
-#         # print(solved_text)
+class CrackTextWithoutUniqueWords(unittest.TestCase):
+
+    def setUp(self):
+        patterns1 = Patterns('spanishPatterns')
+        #                      fronteradelosbesosseranmanana
+        self.ciphered_text1 = 'deibrwelswkiavwaiaawelbnlblbl'
+        self.text1 = Text(self.ciphered_text1)
+        possible_words1 = self.text1.extract_words()
+        solving_dict1 = patterns1.matching_words_dic(possible_words1)
+        self.dictionary1 = Dictionary(solving_dict1)
+        patterns2 = Patterns('spanishPatterns')
+        #                      cuandoenladentadurasientasunarma
+        self.ciphered_text2 = 'xylbsiwbklswbrlsyelauwbrlayblenl'
+        self.text2 = Text(self.ciphered_text2)
+        possible_words2 = self.text2.extract_words()
+        solving_dict2 = patterns2.matching_words_dic(possible_words2)
+        self.dictionary2 = Dictionary(solving_dict2)
+
+    def test_stats(self):
+        solutions1 = algorithms.stats(self.text1, self.dictionary1)
+        solutions2 = algorithms.stats(self.text2, self.dictionary2)
+
+        comparator = Comparator(solutions2, solutions1, self.text1.extract_words_with_position(),
+                                self.text2.extract_words_with_position())
+
+        result = comparator.sort()
+        result.reverse()
+        e, i = result[12]
+        # TODO formalize verification
+        print(i.decipher(self.ciphered_text2))
+        print(e.decipher(self.ciphered_text1))
 
 
 if __name__ == '__main__':

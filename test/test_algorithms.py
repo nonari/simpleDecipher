@@ -8,7 +8,7 @@ from simpledecipher.logger import Logger
 
 LOG = Logger.get_logger('test')
 
-class ASD():
+class ABR():
 
     def setUp(self):
         patterns1 = Patterns('spanishPatterns')
@@ -29,13 +29,6 @@ class ASD():
         possible_words2 = self.text2.extract_words()
         solving_dict2 = patterns2.matching_words_dic(possible_words2)
         self.dictionary2 = Dictionary(solving_dict2)
-
-    def fff(self):
-        solutions1 = Alphabet.generate_random_solutions(18000)
-        solutions2 = Alphabet.generate_random_solutions(18000)
-
-        result = True
-        comparator = Comparator(solutions1, solutions2)
 
     def test_stats(self):
         self.setUp()
@@ -69,4 +62,4 @@ class ASD():
         # TODO check overlaps
 
 if __name__ == "__main__":
-    ASD().test_stats()
+    ABR().test_stats()
