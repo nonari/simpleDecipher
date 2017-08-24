@@ -1,6 +1,6 @@
 import copy
 import time
-from typing import List
+from typing import List, Dict
 from simpledecipher.logger import Logger
 from simpledecipher.alphabet import Alphabet
 
@@ -51,7 +51,7 @@ class Dictionary:
     def solutions(self, ciphered: str) -> List[str]:
         return list(self._d[ciphered])
 
-    def get_dict(self) -> dict:
+    def get_dict(self) -> Dict[str, List[str]]:
         return self._d
 
     def push_entry(self, key: str, possibles: List[str]) -> None:
@@ -59,6 +59,14 @@ class Dictionary:
 
     def keys(self) -> List[str]:
         return list(self._d.keys())
+
+    def solutions_size(self, limit: int) -> int:
+        size = 0
+        for ciphered in self.get_dict():
+            solutions_size = self.get_dict()[ciphered].__len__()
+            if solutions_size < limit:
+                size += solutions_size
+        return size
 
     # Returns dictionary size in words
     def __sizeof__(self):

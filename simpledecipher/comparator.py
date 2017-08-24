@@ -43,7 +43,7 @@ class Comparator:
                     else:
                         matching_index[r_alphabet] = 1
 
-    def sort(self, limit: int=5) -> List[Tuple[Alphabet, Alphabet]]:
+    def sort(self, limit: int=5) -> List[Tuple[Alphabet, Alphabet, int, int]]:
         ordered_solutions = []
         for solution1, index in self.get_solution_pairs():
             for solution2 in index:
@@ -54,7 +54,7 @@ class Comparator:
         result = []
         ordered_solutions.sort(key=lambda t: (t[2], t[3]))
         for (solution1, solution2, matches, h) in ordered_solutions:
-            result.append((solution1, solution2))
+            result.append((solution1, solution2, matches, h))
         return result
 
     def best(self) -> Tuple[Alphabet, Alphabet]:

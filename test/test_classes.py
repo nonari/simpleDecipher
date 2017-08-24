@@ -284,6 +284,7 @@ class CrackTextWithoutUniqueWords(unittest.TestCase):
         result = comparator.sort()
         result.reverse()
         e, i = result[12]
+        # Most accurate result is found at 12th position
         # TODO formalize verification
         print(i.decipher(self.ciphered_text2))
         print(e.decipher(self.ciphered_text1))

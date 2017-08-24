@@ -35,12 +35,12 @@ def stats(text: Text, dictionary: Dictionary) -> List[Alphabet]:
         n += 1
         if 0 == divmod(n, 10):
             LOG.debug('@stats->' + pr.stats())
-            print(chr(27) + "[2J")  # Para que servia esta brujeria?
+            print(chr(27) + "[2J")
             print('(', n, '/', len(combined_letters), ')')
     return solutions
     
 
-def explore_uniques(dictionary: Dictionary, alphabet: Alphabet, uniques: List[str], n: int = 0) -> List[Alphabet]:
+def explore_uniques(dictionary: Dictionary, alphabet: Alphabet, uniques: List[str], n: int=0) -> List[Alphabet]:
     if n > 0:
         LOG.debug('@explore-> Uniques for filter: ' + uniques.__str__())
         first = uniques[0]
@@ -73,13 +73,13 @@ def explore_uniques(dictionary: Dictionary, alphabet: Alphabet, uniques: List[st
     return solutions
 
 
-def brute_exploration(d: Dictionary) -> List[Alphabet]:
+def brute_exploration(d: Dictionary, limit: int=10) -> List[Alphabet]:
     solutions = []
     n = 0
-    l = d.__sizeof__()
+    l = d.solutions_size(limit)
     ciphered_possibles = list(d.keys())
     for ciphered in ciphered_possibles:
-        if len(d.solutions(ciphered)) > 200:
+        if len(d.solutions(ciphered)) > limit:
             continue
         trimmed_dictionary = d.__deepcopy__()
         for possible in d.solutions(ciphered):
@@ -92,9 +92,6 @@ def brute_exploration(d: Dictionary) -> List[Alphabet]:
                 print(pr.stats())
                 print(chr(27) + "[2J")
                 print('(', n, '/', l, ')')
-            # Choose the deepest result from each branch of the tree
-            # if temp_alphabet.get_number_of_words() > max_alphabet.get_number_of_words():
-            #     max_alphabet = temp_alphabet
     return solutions
 
 
