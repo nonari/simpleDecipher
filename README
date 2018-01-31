@@ -6,7 +6,7 @@ substitution ciphered text with no spaces.
 
 This project was born from a capture the flag game proposed by an
 IT Security teacher at the university. The game is about choosing
-a 1000 letters game and ciphering it with the simple substitution
+a 1000 letters text and ciphering it with the simple substitution
 algorithm.
 
 For long texts CrypTool makes it simple to decipher by letter
